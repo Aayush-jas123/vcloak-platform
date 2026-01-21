@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics - vcloak Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            background: var(--bg-secondary);
+        }
+
+        .dashboard-header {
+            background: white;
+            padding: 2rem 0;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 2rem;
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .chart-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border);
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .chart-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+        }
+
+        .date-filter {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .date-filter select {
+            padding: 0.5rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            font-size: 0.875rem;
+        }
+
+        @media (max-width: 768px) {
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="dashboard-header">
+        <div class="container">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div style="display: flex; gap: 2rem; align-items: center;">
+                    <a href="../index.html"
+                        style="font-family: var(--font-display); font-size: 1.5rem; font-weight: 900; background: linear-gradient(135deg, var(--primary), var(--secondary)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">vcloak</a>
+                    <div style="display: flex; gap: 1.5rem;">
+                        <a href="dashboard.html" style="font-weight: 600; color: var(--text-secondary);">Dashboard</a>
+                        <a href="users.html" style="font-weight: 600; color: var(--text-secondary);">Users</a>
+                        <a href="providers.html" style="font-weight: 600; color: var(--text-secondary);">Providers</a>
+                        <a href="bookings.html" style="font-weight: 600; color: var(--text-secondary);">Bookings</a>
+                        <a href="analytics.html" style="font-weight: 600; color: var(--primary);">Analytics</a>
+                    </div>
+                </div>
+                <button id="logout-btn" class="btn btn-ghost btn-sm">Logout</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+            <div>
+                <h1>Analytics Dashboard</h1>
+                <p style="color: var(--text-secondary);">Platform insights and metrics</p>
+            </div>
+            <div class="date-filter">
+                <select id="date-range">
+                    <option value="7">Last 7 days</option>
+                    <option value="30" selected>Last 30 days</option>
+                    <option value="90">Last 90 days</option>
+                    <option value="365">Last year</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Key Metrics -->
+        <div
+            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+            <div class="card">
+                <div style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 0.5rem;">Total Revenue
+                </div>
+                <div style="font-size: 2rem; font-weight: 700; color: var(--primary);" id="total-revenue">₹0</div>
+                <div style="font-size: 0.75rem; color: var(--success);">↑ 12% from last period</div>
+            </div>
+            <div class="card">
+                <div style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 0.5rem;">Total Bookings
+                </div>
+                <div style="font-size: 2rem; font-weight: 700; color: var(--primary);" id="total-bookings">0</div>
+                <div style="font-size: 0.75rem; color: var(--success);">↑ 8% from last period</div>
+            </div>
+            <div class="card">
+                <div style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 0.5rem;">Active Users
+                </div>
+                <div style="font-size: 2rem; font-weight: 700; color: var(--primary);" id="active-users">0</div>
+                <div style="font-size: 0.75rem; color: var(--success);">↑ 15% from last period</div>
+            </div>
+            <div class="card">
+                <div style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 0.5rem;">Avg. Booking
+                    Value</div>
+                <div style="font-size: 2rem; font-weight: 700; color: var(--primary);" id="avg-value">₹0</div>
+                <div style="font-size: 0.75rem; color: var(--success);">↑ 5% from last period</div>
+            </div>
+        </div>
+
+        <!-- Charts -->
+        <div class="charts-grid">
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3 class="chart-title">Revenue Over Time</h3>
+                </div>
+                <canvas id="revenueChart"></canvas>
+            </div>
+
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3 class="chart-title">Bookings by Status</h3>
+                </div>
+                <canvas id="bookingsChart"></canvas>
+            </div>
+
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3 class="chart-title">User Growth</h3>
+                </div>
+                <canvas id="userGrowthChart"></canvas>
+            </div>
+
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3 class="chart-title">Top Locations</h3>
+                </div>
+                <canvas id="locationsChart"></canvas>
+            </div>
+
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3 class="chart-title">Bookings by Day of Week</h3>
+                </div>
+                <canvas id="dayOfWeekChart"></canvas>
+            </div>
+
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3 class="chart-title">User Distribution</h3>
+                </div>
+                <canvas id="userDistChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast-container"></div>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/dashboard-utils.js"></script>
+    <script>
+        if (!requireAuth() || !requireRole('admin')) {
+            // Redirected
+        }
+
+        let charts = {};
+
+        // Generate sample data (replace with real API data)
+        function generateSampleData() {
+            const days = 30;
+            const dates = [];
+            const revenue = [];
+            const bookings = [];
+
+            for (let i = days - 1; i >= 0; i--) {
+                const date = new Date();
+                date.setDate(date.getDate() - i);
+                dates.push(date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+                revenue.push(Math.floor(Math.random() * 50000) + 10000);
+                bookings.push(Math.floor(Math.random() * 50) + 10);
+            }
+
+            return { dates, revenue, bookings };
+        }
+
+        function initCharts() {
+            const data = generateSampleData();
+
+            // Revenue Chart
+            charts.revenue = new Chart(document.getElementById('revenueChart'), {
+                type: 'line',
+                data: {
+                    labels: data.dates,
+                    datasets: [{
+                        label: 'Revenue (₹)',
+                        data: data.revenue,
+                        borderColor: '#6366f1',
+                        backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: value => '₹' + value.toLocaleString()
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Bookings Status Chart
+            charts.bookings = new Chart(document.getElementById('bookingsChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['Completed', 'Active', 'Confirmed', 'Pending', 'Cancelled'],
+                    datasets: [{
+                        data: [45, 12, 18, 15, 10],
+                        backgroundColor: ['#10b981', '#3b82f6', '#f59e0b', '#8b5cf6', '#ef4444']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    }
+                }
+            });
+
+            // User Growth Chart
+            charts.userGrowth = new Chart(document.getElementById('userGrowthChart'), {
+                type: 'line',
+                data: {
+                    labels: data.dates,
+                    datasets: [
+                        {
+                            label: 'Travelers',
+                            data: data.dates.map((_, i) => Math.floor(Math.random() * 20) + i * 2),
+                            borderColor: '#3b82f6',
+                            tension: 0.4
+                        },
+                        {
+                            label: 'Providers',
+                            data: data.dates.map((_, i) => Math.floor(Math.random() * 5) + i),
+                            borderColor: '#10b981',
+                            tension: 0.4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    },
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+
+            // Top Locations Chart
+            charts.locations = new Chart(document.getElementById('locationsChart'), {
+                type: 'bar',
+                data: {
+                    labels: ['Central Station', 'Airport Hub', 'Mall Center', 'Beach Area', 'Downtown'],
+                    datasets: [{
+                        label: 'Bookings',
+                        data: [85, 72, 68, 54, 48],
+                        backgroundColor: '#6366f1'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+
+            // Day of Week Chart
+            charts.dayOfWeek = new Chart(document.getElementById('dayOfWeekChart'), {
+                type: 'bar',
+                data: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    datasets: [{
+                        label: 'Bookings',
+                        data: [45, 52, 48, 61, 75, 88, 72],
+                        backgroundColor: '#10b981'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+
+            // User Distribution Chart
+            charts.userDist = new Chart(document.getElementById('userDistChart'), {
+                type: 'pie',
+                data: {
+                    labels: ['Travelers', 'Providers', 'Admins'],
+                    datasets: [{
+                        data: [75, 23, 2],
+                        backgroundColor: ['#3b82f6', '#10b981', '#f59e0b']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    }
+                }
+            });
+
+            // Update key metrics
+            document.getElementById('total-revenue').textContent = '₹' + data.revenue.reduce((a, b) => a + b, 0).toLocaleString();
+            document.getElementById('total-bookings').textContent = data.bookings.reduce((a, b) => a + b, 0);
+            document.getElementById('active-users').textContent = '1,234';
+            document.getElementById('avg-value').textContent = '₹' + Math.floor(data.revenue.reduce((a, b) => a + b, 0) / data.bookings.reduce((a, b) => a + b, 0)).toLocaleString();
+        }
+
+        document.getElementById('date-range').addEventListener('change', (e) => {
+            // Reload charts with new date range
+            Object.values(charts).forEach(chart => chart.destroy());
+            initCharts();
+            showToast('Analytics updated for selected period', 'success');
+        });
+
+        document.getElementById('logout-btn').addEventListener('click', () => api.logout());
+
+        initCharts();
+    </script>
+</body>
+
+</html>
