@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - vcloak</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/components.css">
+    <style>
+        body {
+            background: var(--bg-secondary);
+        }
+
+        .header {
+            background: white;
+            padding: 2rem 0;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 2rem;
+        }
+
+        .header-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .profile-header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 3rem;
+            border-radius: var(--radius-xl);
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .avatar-large {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: white;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 0 auto 1rem;
+        }
+
+        .profile-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .info-label {
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .info-value {
+            font-weight: 600;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .stat-card {
+            background: var(--bg-secondary);
+            padding: 1.5rem;
+            border-radius: var(--radius-md);
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        @media (max-width: 768px) {
+            .profile-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <div class="container">
+            <div class="header-nav">
+                <a href="index.html" class="logo">vcloak</a>
+                <div>
+                    <button id="back-btn" class="btn btn-ghost btn-sm">← Back to Dashboard</button>
+                    <button id="logout-btn" class="btn btn-ghost btn-sm">Logout</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container" style="max-width: 900px;">
+        <div class="profile-header">
+            <div class="avatar-large" id="avatar">A</div>
+            <h1 id="user-name">Loading...</h1>
+            <p id="user-role" style="opacity: 0.9;"></p>
+        </div>
+
+        <div class="profile-grid">
+            <div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Profile Information</h3>
+                    </div>
+
+                    <div id="profile-info">
+                        <div class="loading-spinner">
+                            <div class="spinner"></div>
+                            <p>Loading profile...</p>
+                        </div>
+                    </div>
+
+                    <div style="padding: 1.5rem; border-top: 1px solid var(--border); display: none;" id="edit-section">
+                        <h4 style="margin-bottom: 1rem;">Edit Profile</h4>
+                        <form id="edit-form">
+                            <div class="form-group">
+                                <label for="name" class="form-label">Name</label>
+                                <input type="text" id="name" class="form-input" required>
+                            </div>
+                            <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+                                <button type="button" class="btn btn-ghost" onclick="cancelEdit()">Cancel</button>
+                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div style="padding: 1.5rem; border-top: 1px solid var(--border);" id="action-buttons">
+                        <button class="btn btn-outline" onclick="showEditForm()">Edit Profile</button>
+                        <a href="change-password.html" class="btn btn-outline">Change Password</a>
+                    </div>
+                </div>
+
+                <div class="card" style="margin-top: 1.5rem;" id="stats-section">
+                    <div class="card-header">
+                        <h3 class="card-title">Statistics</h3>
+                    </div>
+                    <div class="stats-grid" id="stats-container">
+                        <!-- Stats will be loaded here -->
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Quick Actions</h3>
+                    </div>
+                    <div id="quick-actions">
+                        <!-- Role-specific actions will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast-container"></div>
+
+    <script src="js/api.js"></script>
+    <script src="js/dashboard-utils.js"></script>
+    <script>
+        if (!requireAuth()) {
+            // Redirected
+        }
+
+        const user = getCurrentUser();
+        let isEditing = false;
+
+        async function loadProfile() {
+            try {
+                // Update header
+                document.getElementById('user-name').textContent = user.name;
+                document.getElementById('user-role').textContent = user.role.charAt(0).toUpperCase() + user.role.slice(1);
+                document.getElementById('avatar').textContent = user.name.charAt(0).toUpperCase();
+
+                // Display profile info
+                const profileInfo = document.getElementById('profile-info');
+                profileInfo.innerHTML = `
+                    <div class="info-row">
+                        <span class="info-label">Name</span>
+                        <span class="info-value">${user.name}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Email</span>
+                        <span class="info-value">${user.email}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Role</span>
+                        <span class="info-value">${user.role.charAt(0).toUpperCase() + user.role.slice(1)}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Account Status</span>
+                        <span class="info-value">${user.verified ? getStatusBadge('verified') : '<span class="badge badge-warning">Unverified</span>'}</span>
+                    </div>
+                    <div class="info-row" style="border-bottom: none;">
+                        <span class="info-label">Member Since</span>
+                        <span class="info-value">${formatDate(user.created_at)}</span>
+                    </div>
+                `;
+
+                // Load role-specific stats and actions
+                await loadRoleSpecificContent();
+
+            } catch (error) {
+                console.error('Error loading profile:', error);
+                handleApiError(error);
+            }
+        }
+
+        async function loadRoleSpecificContent() {
+            const statsContainer = document.getElementById('stats-container');
+            const actionsContainer = document.getElementById('quick-actions');
+
+            try {
+                if (user.role === 'traveler') {
+                    const { bookings } = await api.getBookings();
+                    statsContainer.innerHTML = `
+                        <div class="stat-card">
+                            <div class="stat-value">${bookings.length}</div>
+                            <div class="stat-label">Total Bookings</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">${bookings.filter(b => b.status === 'completed').length}</div>
+                            <div class="stat-label">Completed</div>
+                        </div>
+                    `;
+                    actionsContainer.innerHTML = `
+                        <a href="traveler/search.html" class="btn btn-primary" style="width: 100%; margin-bottom: 0.5rem;">🔍 Find Storage</a>
+                        <a href="traveler/dashboard.html" class="btn btn-outline" style="width: 100%;">📊 Dashboard</a>
+                    `;
+                } else if (user.role === 'provider') {
+                    const { locations } = await api.getLocations();
+                    const myLocations = locations.filter(l => l.provider_id === user.id);
+                    const { bookings } = await api.getProviderBookings();
+
+                    statsContainer.innerHTML = `
+                        <div class="stat-card">
+                            <div class="stat-value">${myLocations.length}</div>
+                            <div class="stat-label">Locations</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">${bookings.length}</div>
+                            <div class="stat-label">Total Bookings</div>
+                        </div>
+                    `;
+                    actionsContainer.innerHTML = `
+                        <a href="provider/locations.html" class="btn btn-primary" style="width: 100%; margin-bottom: 0.5rem;">📍 My Locations</a>
+                        <a href="provider/bookings.html" class="btn btn-outline" style="width: 100%; margin-bottom: 0.5rem;">📦 Bookings</a>
+                        <a href="provider/dashboard.html" class="btn btn-outline" style="width: 100%;">📊 Dashboard</a>
+                    `;
+                } else if (user.role === 'admin') {
+                    const { stats } = await api.getAdminStats();
+                    statsContainer.innerHTML = `
+                        <div class="stat-card">
+                            <div class="stat-value">${stats.total_users || 0}</div>
+                            <div class="stat-label">Total Users</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">${stats.total_bookings || 0}</div>
+                            <div class="stat-label">Total Bookings</div>
+                        </div>
+                    `;
+                    actionsContainer.innerHTML = `
+                        <a href="admin/users.html" class="btn btn-primary" style="width: 100%; margin-bottom: 0.5rem;">👥 Manage Users</a>
+                        <a href="admin/providers.html" class="btn btn-outline" style="width: 100%; margin-bottom: 0.5rem;">🏪 Providers</a>
+                        <a href="admin/dashboard.html" class="btn btn-outline" style="width: 100%;">📊 Dashboard</a>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error loading stats:', error);
+                statsContainer.innerHTML = '<p style="color: var(--text-secondary); padding: 1rem;">Unable to load statistics</p>';
+            }
+        }
+
+        function showEditForm() {
+            document.getElementById('edit-section').style.display = 'block';
+            document.getElementById('action-buttons').style.display = 'none';
+            document.getElementById('name').value = user.name;
+            isEditing = true;
+        }
+
+        function cancelEdit() {
+            document.getElementById('edit-section').style.display = 'none';
+            document.getElementById('action-buttons').style.display = 'block';
+            isEditing = false;
+        }
+
+        document.getElementById('edit-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const newName = document.getElementById('name').value.trim();
+
+            if (!newName) {
+                showToast('Name cannot be empty', 'error');
+                return;
+            }
+
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent;
+
+            try {
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Saving...';
+
+                // Update user info in localStorage
+                user.name = newName;
+                localStorage.setItem('user', JSON.stringify(user));
+
+                showToast('Profile updated successfully!', 'success');
+                cancelEdit();
+                loadProfile();
+
+            } catch (error) {
+                console.error('Error updating profile:', error);
+                handleApiError(error);
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
+            }
+        });
+
+        document.getElementById('back-btn').addEventListener('click', () => {
+            const dashboards = {
+                'admin': 'admin/dashboard.html',
+                'provider': 'provider/dashboard.html',
+                'traveler': 'traveler/dashboard.html'
+            };
+            window.location.href = dashboards[user.role] || 'index.html';
+        });
+
+        document.getElementById('logout-btn').addEventListener('click', () => api.logout());
+
+        loadProfile();
+    </script>
+</body>
+
+</html>
