@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Email - vcloak</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/components.css">
+    <style>
+        body {
+            background: var(--bg-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .verify-container {
+            text-align: center;
+            max-width: 500px;
+        }
+
+        .verify-icon {
+            font-size: 5rem;
+            margin-bottom: 1rem;
+        }
+
+        .verify-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .verify-message {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            font-size: 1.125rem;
+        }
+
+        .verify-card {
+            background: white;
+            padding: 2rem;
+            border-radius: var(--radius-lg);
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="verify-container">
+        <div id="verify-content">
+            <div class="verify-icon">📧</div>
+            <h1 class="verify-title">Verifying Your Email...</h1>
+            <div class="verify-card">
+                <div class="loading-spinner">
+                    <div class="spinner"></div>
+                    <p>Please wait while we verify your email address</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const token = urlParams.get('token');
+
+        async function verifyEmail() {
+            if (!token) {
+                showError('Invalid verification link');
+                return;
+            }
+
+            try {
+                // Call backend API to verify email
+                // await api.verifyEmail(token);
+
+                // Simulate success for now
+                await new Promise(resolve => setTimeout(resolve, 2000));
+
+                showSuccess();
+            } catch (error) {
+                console.error('Verification error:', error);
+                showError('Verification failed. The link may be expired or invalid.');
+            }
+        }
+
+        function showSuccess() {
+            document.getElementById('verify-content').innerHTML = `
+                <div class="verify-icon">✅</div>
+                <h1 class="verify-title">Email Verified!</h1>
+                <p class="verify-message">
+                    Your email has been successfully verified. You can now access all features of vcloak.
+                </p>
+                <a href="login.html" class="btn btn-primary">Go to Login</a>
+            `;
+        }
+
+        function showError(message) {
+            document.getElementById('verify-content').innerHTML = `
+                <div class="verify-icon">❌</div>
+                <h1 class="verify-title">Verification Failed</h1>
+                <p class="verify-message">${message}</p>
+                <div style="display: flex; gap: 1rem; justify-content: center;">
+                    <a href="login.html" class="btn btn-ghost">Go to Login</a>
+                    <button onclick="resendVerification()" class="btn btn-primary">Resend Email</button>
+                </div>
+            `;
+        }
+
+        async function resendVerification() {
+            // Call API to resend verification email
+            alert('Verification email sent! Please check your inbox.');
+        }
+
+        verifyEmail();
+    </script>
+</body>
+
+</html>
