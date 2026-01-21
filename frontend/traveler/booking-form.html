@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Storage - vcloak</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <style>
+        body {
+            background: var(--bg-secondary);
+        }
+
+        .dashboard-header {
+            background: white;
+            padding: 2rem 0;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 2rem;
+        }
+
+        .dashboard-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-left {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .booking-container {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 2rem;
+        }
+
+        .location-summary {
+            background: white;
+            padding: 1.5rem;
+            border-radius: var(--radius-lg);
+            margin-bottom: 1.5rem;
+        }
+
+        .summary-card {
+            background: white;
+            padding: 2rem;
+            border-radius: var(--radius-lg);
+            border: 2px solid var(--primary);
+            position: sticky;
+            top: 2rem;
+        }
+
+        .price-breakdown {
+            padding: 1rem;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-md);
+            margin-bottom: 1.5rem;
+        }
+
+        .price-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .total-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            padding-top: 1rem;
+            border-top: 2px solid var(--border);
+        }
+
+        @media (max-width: 768px) {
+            .booking-container {
+                grid-template-columns: 1fr;
+            }
+
+            .summary-card {
+                position: static;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="dashboard-header">
+        <div class="container">
+            <div class="dashboard-nav">
+                <div class="nav-left">
+                    <a href="../index.html" class="logo">vcloak</a>
+                </div>
+                <div>
+                    <button id="logout-btn" class="btn btn-ghost btn-sm">Logout</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div style="margin-bottom: 2rem;">
+            <h1>Complete Your Booking</h1>
+            <p style="color: var(--text-secondary);">Fill in your booking details</p>
+        </div>
+
+        <div class="booking-container">
+            <div>
+                <div class="location-summary">
+                    <h3 style="margin-bottom: 1rem;">Storage Location</h3>
+                    <div id="location-info">
+                        <div class="loading-spinner">
+                            <div class="spinner"></div>
+                            <p>Loading location...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Booking Details</h3>
+                    </div>
+
+                    <form id="booking-form">
+                        <div class="form-group">
+                            <label for="check_in" class="form-label">Check-in Date & Time *</label>
+                            <input type="datetime-local" id="check_in" name="check_in" class="form-input" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="check_out" class="form-label">Check-out Date & Time *</label>
+                            <input type="datetime-local" id="check_out" name="check_out" class="form-input" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="num_bags" class="form-label">Number of Bags *</label>
+                            <input type="number" id="num_bags" name="num_bags" class="form-input" min="1" value="1"
+                                required>
+                            <div class="help-text">Maximum capacity: <span id="max-capacity">0</span> bags</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="special_instructions" class="form-label">Special Instructions</label>
+                            <textarea id="special_instructions" name="special_instructions" class="form-input" rows="3"
+                                placeholder="Any special requirements or notes..."></textarea>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div>
+                <div class="summary-card">
+                    <h3 style="margin-bottom: 1.5rem;">Booking Summary</h3>
+
+                    <div class="price-breakdown">
+                        <div class="price-row">
+                            <span>Duration:</span>
+                            <strong id="duration-display">0 hours</strong>
+                        </div>
+                        <div class="price-row">
+                            <span>Price per bag/hour:</span>
+                            <strong id="price-per-hour">₹0</strong>
+                        </div>
+                        <div class="price-row">
+                            <span>Number of bags:</span>
+                            <strong id="bags-display">1</strong>
+                        </div>
+                        <div class="price-row total-price">
+                            <span>Total:</span>
+                            <span id="total-price">₹0</span>
+                        </div>
+                    </div>
+
+                    <button type="button" id="submit-booking" class="btn btn-primary" style="width: 100%;">
+                        Confirm Booking
+                    </button>
+
+                    <p style="font-size: 0.875rem; color: var(--text-secondary); margin-top: 1rem; text-align: center;">
+                        Your booking will be confirmed by the provider
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast-container"></div>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/dashboard-utils.js"></script>
+    <script>
+        if (!requireAuth() || !requireRole('traveler')) {
+            // Redirected
+        }
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const locationId = urlParams.get('location');
+
+        if (!locationId) {
+            window.location.href = '../index.html';
+        }
+
+        let currentLocation = null;
+
+        async function loadLocation() {
+            try {
+                const { location } = await api.getLocation(locationId);
+                currentLocation = location;
+
+                const locationInfo = document.getElementById('location-info');
+                locationInfo.innerHTML = `
+                    <div style="display: flex; gap: 1rem; align-items: start;">
+                        <div style="font-size: 3rem;">📦</div>
+                        <div style="flex: 1;">
+                            <h4 style="margin-bottom: 0.5rem;">${location.business_name}</h4>
+                            <p style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 0.5rem;">
+                                📍 ${location.address}
+                            </p>
+                            <div style="display: flex; gap: 0.5rem;">
+                                ${getStatusBadge(location.verified ? 'verified' : 'unverified')}
+                                <span class="badge">Capacity: ${location.capacity} bags</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                document.getElementById('max-capacity').textContent = location.capacity;
+                document.getElementById('price-per-hour').textContent = formatCurrency(location.price_per_hour);
+                document.getElementById('num_bags').max = location.capacity;
+
+                // Set minimum check-in to current time
+                const now = new Date();
+                now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+                document.getElementById('check_in').min = now.toISOString().slice(0, 16);
+                document.getElementById('check_out').min = now.toISOString().slice(0, 16);
+
+            } catch (error) {
+                console.error('Error loading location:', error);
+                handleApiError(error);
+            }
+        }
+
+        function calculatePrice() {
+            if (!currentLocation) return;
+
+            const checkIn = document.getElementById('check_in').value;
+            const checkOut = document.getElementById('check_out').value;
+            const numBags = parseInt(document.getElementById('num_bags').value) || 1;
+
+            if (!checkIn || !checkOut) {
+                return;
+            }
+
+            const checkInDate = new Date(checkIn);
+            const checkOutDate = new Date(checkOut);
+
+            if (checkOutDate <= checkInDate) {
+                document.getElementById('duration-display').textContent = 'Invalid';
+                document.getElementById('total-price').textContent = '₹0';
+                return;
+            }
+
+            const durationMs = checkOutDate - checkInDate;
+            const durationHours = Math.ceil(durationMs / (1000 * 60 * 60));
+
+            const totalPrice = durationHours * currentLocation.price_per_hour * numBags;
+
+            document.getElementById('duration-display').textContent = durationHours + ' hour' + (durationHours !== 1 ? 's' : '');
+            document.getElementById('bags-display').textContent = numBags;
+            document.getElementById('total-price').textContent = formatCurrency(totalPrice);
+        }
+
+        // Add event listeners for real-time price calculation
+        document.getElementById('check_in').addEventListener('change', calculatePrice);
+        document.getElementById('check_out').addEventListener('change', calculatePrice);
+        document.getElementById('num_bags').addEventListener('input', calculatePrice);
+
+        document.getElementById('submit-booking').addEventListener('click', async () => {
+            const form = document.getElementById('booking-form');
+
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+
+            const checkIn = document.getElementById('check_in').value;
+            const checkOut = document.getElementById('check_out').value;
+            const numBags = parseInt(document.getElementById('num_bags').value);
+            const specialInstructions = document.getElementById('special_instructions').value;
+
+            // Validation
+            const checkInDate = new Date(checkIn);
+            const checkOutDate = new Date(checkOut);
+
+            if (checkOutDate <= checkInDate) {
+                showToast('Check-out must be after check-in', 'error');
+                return;
+            }
+
+            if (checkInDate < new Date()) {
+                showToast('Check-in cannot be in the past', 'error');
+                return;
+            }
+
+            if (numBags > currentLocation.capacity) {
+                showToast(`Number of bags cannot exceed capacity (${currentLocation.capacity})`, 'error');
+                return;
+            }
+
+            const submitBtn = document.getElementById('submit-booking');
+            const originalText = submitBtn.textContent;
+
+            try {
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Creating Booking...';
+
+                const durationMs = checkOutDate - checkInDate;
+                const durationHours = Math.ceil(durationMs / (1000 * 60 * 60));
+                const totalPrice = durationHours * currentLocation.price_per_hour * numBags;
+
+                const bookingData = {
+                    location_id: parseInt(locationId),
+                    check_in: checkIn,
+                    check_out: checkOut,
+                    num_bags: numBags,
+                    total_price: totalPrice,
+                    special_instructions: specialInstructions
+                };
+
+                await api.createBooking(bookingData);
+                showToast('Booking created successfully!', 'success');
+
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 1500);
+
+            } catch (error) {
+                console.error('Error creating booking:', error);
+                handleApiError(error);
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
+            }
+        });
+
+        document.getElementById('logout-btn').addEventListener('click', () => api.logout());
+
+        loadLocation();
+    </script>
+</body>
+
+</html>

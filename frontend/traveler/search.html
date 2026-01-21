@@ -358,8 +358,7 @@
         }
 
         function viewLocation(locationId) {
-            // TODO: Navigate to location details page
-            showToast('Location details page coming soon!', 'info');
+            window.location.href = `../location-details.html?id=${locationId}`;
         }
 
         // Event listeners
