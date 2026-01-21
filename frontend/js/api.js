@@ -87,7 +87,7 @@ const api = {
 
     async logout() {
         removeAuthToken();
-        window.location.href = '/frontend/index.html';
+        window.location.href = '/login.html';
     },
 
     async getCurrentUser() {
@@ -217,7 +217,7 @@ function isAuthenticated() {
 // Redirect if not authenticated
 function requireAuth() {
     if (!isAuthenticated()) {
-        window.location.href = '/frontend/login.html';
+        window.location.href = '/login.html';
         return false;
     }
     return true;
@@ -227,7 +227,7 @@ function requireAuth() {
 function requireRole(role) {
     const user = getCurrentUser();
     if (!user || user.role !== role) {
-        window.location.href = '/frontend/index.html';
+        window.location.href = '/index.html';
         return false;
     }
     return true;
