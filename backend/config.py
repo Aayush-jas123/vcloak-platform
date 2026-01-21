@@ -13,8 +13,11 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     # Handle both DATABASE_URL and postgres:// vs postgresql://
     database_url = os.getenv('DATABASE_URL', 'sqlite:///vcloak.db')
+    # Convert to postgresql+psycopg:// for psycopg3 compatibility
     if database_url.startswith('postgres://'):
-        database_url = database_url.replace('postgres://', 'postgresql://', 1)
+        database_url = database_url.replace('postgres://', 'postgresql+psycopg://', 1)
+    elif database_url.startswith('postgresql://'):
+        database_url = database_url.replace('postgresql://', 'postgresql+psycopg://', 1)
     SQLALCHEMY_DATABASE_URI = database_url
     CORS_ORIGINS = os.getenv('CORS_ORIGINS', '*').split(',')
 
