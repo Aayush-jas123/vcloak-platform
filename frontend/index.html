@@ -1,362 +1,423 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>vcloak - Secure Luggage Storage Anywhere</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@700;800;900&display=swap" rel="stylesheet">
+    <title>vcloak - Secure Luggage Storage Platform</title>
+    <meta name="description"
+        content="Store your luggage securely with verified local providers. Travel freely without the burden of bags.">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/components.css">
     <style>
-        /* Navbar */
-        .navbar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--border);
-            z-index: 100;
-            transition: all var(--transition-base);
-        }
-        
-        .navbar-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 1rem 1.5rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .logo {
-            font-family: var(--font-display);
-            font-size: 1.75rem;
-            font-weight: 900;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-            align-items: center;
-        }
-        
-        .nav-links a {
-            font-weight: 600;
-            color: var(--text-primary);
-            transition: color var(--transition-fast);
-        }
-        
-        .nav-links a:hover {
-            color: var(--primary);
-        }
-        
-        /* Hero */
+        /* Hero Section - Premium */
         .hero {
-            margin-top: 80px;
-            padding: 6rem 0;
-            background: linear-gradient(135deg, #f0f4ff 0%, #e0f2fe 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             position: relative;
             overflow: hidden;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
         }
-        
+
         .hero::before {
             content: '';
             position: absolute;
-            top: -50%;
-            right: -20%;
-            width: 800px;
-            height: 800px;
-            background: radial-gradient(circle, rgba(99, 102, 241, 0.1) 0%, transparent 70%);
-            border-radius: 50%;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                radial-gradient(circle at 20% 50%, rgba(99, 102, 241, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(236, 72, 153, 0.3) 0%, transparent 50%);
+            animation: float 8s ease-in-out infinite;
         }
-        
+
         .hero-content {
             position: relative;
-            z-index: 1;
+            z-index: 2;
+            text-align: center;
+            max-width: 900px;
+            padding: 2rem;
         }
-        
-        .hero h1 {
-            font-size: 4rem;
+
+        .hero-title {
+            font-size: clamp(3rem, 8vw, 5rem);
+            font-weight: 900;
+            color: white;
             margin-bottom: 1.5rem;
-            background: linear-gradient(135deg, var(--text-primary), var(--primary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            animation: fadeIn 1s ease-out;
         }
-        
-        .hero p {
-            font-size: 1.25rem;
-            max-width: 600px;
-            margin: 0 auto 2rem;
+
+        .hero-subtitle {
+            font-size: clamp(1.25rem, 3vw, 1.75rem);
+            color: rgba(255, 255, 255, 0.95);
+            margin-bottom: 3rem;
+            font-weight: 400;
+            animation: fadeIn 1s ease-out 0.2s both;
         }
-        
-        .hero-buttons {
+
+        .hero-cta {
             display: flex;
-            gap: 1rem;
+            gap: 1.5rem;
             justify-content: center;
             flex-wrap: wrap;
+            animation: fadeIn 1s ease-out 0.4s both;
         }
-        
-        /* Features */
-        .features {
-            padding: 6rem 0;
+
+        .hero-card {
+            background: var(--glass-bg-strong);
+            backdrop-filter: var(--glass-blur-strong);
+            -webkit-backdrop-filter: var(--glass-blur-strong);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-2xl);
+            padding: 3rem;
+            margin-top: 4rem;
+            box-shadow: var(--shadow-2xl);
+            animation: scaleIn 0.8s ease-out 0.6s both;
         }
-        
-        .section-title {
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .stat-item {
             text-align: center;
-            margin-bottom: 3rem;
         }
-        
-        .feature-card {
-            text-align: center;
-            padding: 2rem;
-            border-radius: var(--radius-xl);
-            background: var(--bg-primary);
-            border: 2px solid var(--border);
-            transition: all var(--transition-base);
-        }
-        
-        .feature-card:hover {
-            border-color: var(--primary);
-            transform: translateY(-8px);
-            box-shadow: var(--shadow-xl);
-        }
-        
-        .feature-icon {
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 1.5rem;
-            background: linear-gradient(135deg, var(--primary), var(--primary-light));
-            border-radius: var(--radius-xl);
-            display: flex;
-            align-items: center;
-            justify-content: center;
+
+        .stat-number {
             font-size: 2.5rem;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 0.5rem;
         }
-        
-        /* How It Works */
-        .how-it-works {
+
+        .stat-label {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.875rem;
+        }
+
+        /* Features Section */
+        .features {
             padding: 6rem 0;
             background: var(--bg-secondary);
         }
-        
-        .step {
-            display: flex;
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 2rem;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 2.5rem;
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-md);
+            transition: var(--transition-smooth);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .feature-icon {
+            width: 64px;
+            height: 64px;
+            background: var(--gradient-primary);
+            border-radius: var(--radius-lg);
+            display: flex;
             align-items: center;
-            margin-bottom: 3rem;
+            justify-content: center;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow-glow);
         }
-        
-        .step:nth-child(even) {
-            flex-direction: row-reverse;
+
+        .feature-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
         }
-        
+
+        .feature-description {
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        /* How It Works */
+        .how-it-works {
+            padding: 6rem 0;
+            background: white;
+        }
+
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-top: 4rem;
+        }
+
+        .step-card {
+            text-align: center;
+            position: relative;
+        }
+
         .step-number {
             width: 80px;
             height: 80px;
-            flex-shrink: 0;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
+            background: var(--gradient-primary);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 2rem;
-            font-weight: 900;
-            box-shadow: var(--shadow-lg);
-        }
-        
-        .step-content h3 {
-            margin-bottom: 0.5rem;
-        }
-        
-        /* CTA */
-        .cta {
-            padding: 6rem 0;
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            font-weight: 800;
             color: white;
-            text-align: center;
+            margin: 0 auto 1.5rem;
+            box-shadow: var(--shadow-glow);
         }
-        
-        .cta h2 {
-            color: white;
+
+        .step-title {
+            font-size: 1.25rem;
+            font-weight: 700;
             margin-bottom: 1rem;
         }
-        
-        .cta p {
-            color: rgba(255, 255, 255, 0.9);
-            font-size: 1.25rem;
-            margin-bottom: 2rem;
+
+        /* CTA Section */
+        .cta-section {
+            padding: 6rem 0;
+            background: var(--gradient-hero);
+            text-align: center;
+            color: white;
         }
-        
+
+        .cta-title {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 900;
+            margin-bottom: 1.5rem;
+            color: white;
+        }
+
+        .cta-subtitle {
+            font-size: 1.25rem;
+            margin-bottom: 2.5rem;
+            opacity: 0.95;
+        }
+
         /* Footer */
         .footer {
-            background: var(--text-primary);
+            background: var(--bg-dark);
             color: white;
-            padding: 3rem 0 1rem;
+            padding: 3rem 0 1.5rem;
         }
-        
+
         .footer-content {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 3rem;
             margin-bottom: 2rem;
         }
-        
-        .footer h4 {
-            color: white;
+
+        .footer-section h4 {
             margin-bottom: 1rem;
-        }
-        
-        .footer a {
-            color: rgba(255, 255, 255, 0.7);
-            display: block;
-            margin-bottom: 0.5rem;
-        }
-        
-        .footer a:hover {
             color: white;
         }
-        
+
+        .footer-section a {
+            display: block;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 0.5rem;
+            transition: var(--transition-base);
+        }
+
+        .footer-section a:hover {
+            color: white;
+            padding-left: 5px;
+        }
+
         .footer-bottom {
             text-align: center;
             padding-top: 2rem;
             border-top: 1px solid rgba(255, 255, 255, 0.1);
-            color: rgba(255, 255, 255, 0.7);
+            color: rgba(255, 255, 255, 0.6);
         }
-        
-        @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 2.5rem;
-            }
-            
-            .step {
-                flex-direction: column !important;
-                text-align: center;
-            }
-            
-            .nav-links {
-                display: none;
-            }
+
+        /* Scroll Animations */
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease-out;
+        }
+
+        .scroll-reveal.revealed {
+            opacity: 1;
+            transform: translateY(0);
         }
     </style>
 </head>
-<body>
-    <!-- Navbar -->
-    <nav class="navbar">
-        <div class="navbar-container">
-            <div class="logo">vcloak</div>
-            <div class="nav-links">
-                <a href="#features">Features</a>
-                <a href="#how-it-works">How It Works</a>
-                <a href="login.html">Login</a>
-                <a href="register.html" class="btn btn-primary btn-sm">Get Started</a>
-            </div>
-        </div>
-    </nav>
 
+<body>
     <!-- Hero Section -->
     <section class="hero">
-        <div class="container text-center hero-content">
-            <h1 class="fade-in">Travel Light, Explore More</h1>
-            <p class="fade-in">Secure luggage storage in every city. Drop your bags, explore freely, and pick them up when you're ready.</p>
-            <div class="hero-buttons fade-in">
-                <a href="register.html?role=traveler" class="btn btn-primary btn-lg">Find Storage</a>
-                <a href="register.html?role=provider" class="btn btn-outline btn-lg">Become a Provider</a>
+        <div class="hero-content">
+            <h1 class="hero-title">Store Your Luggage,<br>Explore Freely</h1>
+            <p class="hero-subtitle">
+                Secure, verified storage locations across the city.<br>
+                Book in seconds, travel without limits.
+            </p>
+
+            <div class="hero-cta">
+                <a href="register.html" class="btn btn-primary btn-lg">Get Started Free</a>
+                <a href="traveler/search.html" class="btn btn-glass btn-lg">Find Storage</a>
+            </div>
+
+            <div class="hero-card">
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-number">500+</div>
+                        <div class="stat-label">Locations</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">10K+</div>
+                        <div class="stat-label">Happy Travelers</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">4.9★</div>
+                        <div class="stat-label">Average Rating</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">24/7</div>
+                        <div class="stat-label">Support</div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
 
     <!-- Features Section -->
-    <section id="features" class="features">
+    <section class="features">
         <div class="container">
             <div class="section-title">
                 <h2>Why Choose vcloak?</h2>
-                <p>Safe, convenient, and affordable luggage storage</p>
+                <p style="font-size: 1.125rem; color: var(--text-secondary); max-width: 600px; margin: 1rem auto 0;">
+                    The most trusted luggage storage platform with verified providers and instant booking.
+                </p>
             </div>
-            <div class="grid grid-3">
-                <div class="feature-card">
+
+            <div class="features-grid">
+                <div class="feature-card scroll-reveal">
                     <div class="feature-icon">🔒</div>
-                    <h3>100% Secure</h3>
-                    <p>All storage providers are verified. Your belongings are insured and monitored.</p>
+                    <h3 class="feature-title">100% Secure</h3>
+                    <p class="feature-description">
+                        All locations are verified and insured. Your belongings are protected with comprehensive
+                        coverage.
+                    </p>
                 </div>
-                <div class="feature-card">
-                    <div class="feature-icon">📍</div>
-                    <h3>Convenient Locations</h3>
-                    <p>Find storage near train stations, airports, bus stands, and tourist spots.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">💰</div>
-                    <h3>Affordable Pricing</h3>
-                    <p>Pay only for the hours you need. No hidden fees, transparent pricing.</p>
-                </div>
-                <div class="feature-card">
+
+                <div class="feature-card scroll-reveal">
                     <div class="feature-icon">⚡</div>
-                    <h3>Instant Booking</h3>
-                    <p>Book in seconds, drop off your bags, and start exploring immediately.</p>
+                    <h3 class="feature-title">Instant Booking</h3>
+                    <p class="feature-description">
+                        Book in seconds with real-time availability. No waiting, no hassle. Just drop and go.
+                    </p>
                 </div>
-                <div class="feature-card">
+
+                <div class="feature-card scroll-reveal">
+                    <div class="feature-icon">📍</div>
+                    <h3 class="feature-title">Prime Locations</h3>
+                    <p class="feature-description">
+                        Storage near stations, airports, and tourist spots. Always close to where you need to be.
+                    </p>
+                </div>
+
+                <div class="feature-card scroll-reveal">
+                    <div class="feature-icon">💰</div>
+                    <h3 class="feature-title">Best Prices</h3>
+                    <p class="feature-description">
+                        Transparent pricing with no hidden fees. Starting from just ₹50/hour. Pay only for what you use.
+                    </p>
+                </div>
+
+                <div class="feature-card scroll-reveal">
                     <div class="feature-icon">⭐</div>
-                    <h3>Trusted Providers</h3>
-                    <p>All providers are rated and reviewed by travelers like you.</p>
+                    <h3 class="feature-title">Verified Reviews</h3>
+                    <p class="feature-description">
+                        Real reviews from real travelers. Make informed decisions with our transparent rating system.
+                    </p>
                 </div>
-                <div class="feature-card">
-                    <div class="feature-icon">📱</div>
-                    <h3>Easy to Use</h3>
-                    <p>Simple interface, quick booking, and 24/7 customer support.</p>
+
+                <div class="feature-card scroll-reveal">
+                    <div class="feature-icon">🎯</div>
+                    <h3 class="feature-title">Flexible Hours</h3>
+                    <p class="feature-description">
+                        Store for an hour or a week. Flexible booking options to match your travel schedule.
+                    </p>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- How It Works -->
-    <section id="how-it-works" class="how-it-works">
+    <section class="how-it-works">
         <div class="container">
             <div class="section-title">
                 <h2>How It Works</h2>
-                <p>Three simple steps to secure luggage storage</p>
+                <p style="font-size: 1.125rem; color: var(--text-secondary); max-width: 600px; margin: 1rem auto 0;">
+                    Three simple steps to freedom from luggage
+                </p>
             </div>
-            
-            <div class="step">
-                <div class="step-number">1</div>
-                <div class="step-content">
-                    <h3>Find a Location</h3>
-                    <p>Search for storage locations near your current location or destination. Filter by price, distance, and amenities.</p>
+
+            <div class="steps-grid">
+                <div class="step-card scroll-reveal">
+                    <div class="step-number">1</div>
+                    <h3 class="step-title">Find a Location</h3>
+                    <p class="feature-description">
+                        Search for storage near you. View prices, ratings, and availability in real-time.
+                    </p>
                 </div>
-            </div>
-            
-            <div class="step">
-                <div class="step-number">2</div>
-                <div class="step-content">
-                    <h3>Book Online</h3>
-                    <p>Select your check-in and check-out times, number of bags, and complete the booking in seconds.</p>
+
+                <div class="step-card scroll-reveal">
+                    <div class="step-number">2</div>
+                    <h3 class="step-title">Book Instantly</h3>
+                    <p class="feature-description">
+                        Select your time slot and confirm. Get instant confirmation and directions.
+                    </p>
                 </div>
-            </div>
-            
-            <div class="step">
-                <div class="step-number">3</div>
-                <div class="step-content">
-                    <h3>Drop Off & Explore</h3>
-                    <p>Show your booking confirmation, drop off your bags, and enjoy your day hands-free!</p>
+
+                <div class="step-card scroll-reveal">
+                    <div class="step-number">3</div>
+                    <h3 class="step-title">Drop & Explore</h3>
+                    <p class="feature-description">
+                        Drop off your bags and explore freely. Pick up whenever you're ready.
+                    </p>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- CTA Section -->
-    <section class="cta">
+    <section class="cta-section">
         <div class="container">
-            <h2>Ready to Travel Light?</h2>
-            <p>Join thousands of travelers who trust vcloak for secure luggage storage</p>
-            <a href="register.html" class="btn btn-secondary btn-lg">Get Started Now</a>
+            <h2 class="cta-title">Ready to Travel Light?</h2>
+            <p class="cta-subtitle">Join thousands of travelers who trust vcloak with their luggage</p>
+            <div style="display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap;">
+                <a href="register.html" class="btn btn-primary btn-lg">Start Storing Today</a>
+                <a href="login.html" class="btn btn-glass btn-lg">Sign In</a>
+            </div>
         </div>
     </section>
 
@@ -364,37 +425,59 @@
     <footer class="footer">
         <div class="container">
             <div class="footer-content">
-                <div>
+                <div class="footer-section">
                     <h4>vcloak</h4>
-                    <p>Secure luggage storage in every city. Travel light, explore more.</p>
+                    <p style="color: rgba(255, 255, 255, 0.7);">
+                        Secure luggage storage platform connecting travelers with verified local providers.
+                    </p>
                 </div>
-                <div>
+
+                <div class="footer-section">
                     <h4>For Travelers</h4>
                     <a href="traveler/search.html">Find Storage</a>
-                    <a href="traveler/bookings.html">My Bookings</a>
-                    <a href="#">How It Works</a>
+                    <a href="register.html">Sign Up</a>
+                    <a href="login.html">Sign In</a>
                 </div>
-                <div>
+
+                <div class="footer-section">
                     <h4>For Providers</h4>
+                    <a href="register.html">Become a Provider</a>
                     <a href="provider/dashboard.html">Provider Dashboard</a>
-                    <a href="provider/locations.html">Manage Locations</a>
-                    <a href="#">Become a Provider</a>
                 </div>
-                <div>
+
+                <div class="footer-section">
                     <h4>Company</h4>
-                    <a href="#">About Us</a>
-                    <a href="#">Contact</a>
-                    <a href="#">Privacy Policy</a>
-                    <a href="#">Terms of Service</a>
+                    <a href="#about">About Us</a>
+                    <a href="#contact">Contact</a>
+                    <a href="#terms">Terms of Service</a>
+                    <a href="#privacy">Privacy Policy</a>
                 </div>
             </div>
+
             <div class="footer-bottom">
-                <p>&copy; 2024 vcloak. All rights reserved.</p>
+                <p>&copy; 2026 vcloak. All rights reserved. | Made with ❤️ for travelers</p>
             </div>
         </div>
     </footer>
 
-    <script src="js/api.js"></script>
-    <script src="js/main.js"></script>
+    <script>
+        // Scroll reveal animation
+        const revealElements = document.querySelectorAll('.scroll-reveal');
+
+        const revealOnScroll = () => {
+            revealElements.forEach(element => {
+                const elementTop = element.getBoundingClientRect().top;
+                const elementVisible = 150;
+
+                if (elementTop < window.innerHeight - elementVisible) {
+                    element.classList.add('revealed');
+                }
+            });
+        };
+
+        window.addEventListener('scroll', revealOnScroll);
+        revealOnScroll(); // Initial check
+    </script>
 </body>
+
 </html>
