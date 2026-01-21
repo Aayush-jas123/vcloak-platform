@@ -20,6 +20,14 @@ class Config:
         database_url = database_url.replace('postgresql://', 'postgresql+psycopg://', 1)
     SQLALCHEMY_DATABASE_URI = database_url
     CORS_ORIGINS = os.getenv('CORS_ORIGINS', '*').split(',')
+    
+    # Database connection pool settings to prevent timeouts
+    SQLALCHEMY_ENGINE_OPTIONS = {
+        'pool_pre_ping': True,  # Verify connections before using
+        'pool_recycle': 300,    # Recycle connections after 5 minutes
+        'pool_size': 10,        # Connection pool size
+        'max_overflow': 20      # Max connections beyond pool_size
+    }
 
 class DevelopmentConfig(Config):
     """Development configuration"""
