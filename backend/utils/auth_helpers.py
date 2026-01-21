@@ -10,7 +10,7 @@ def role_required(*allowed_roles):
         def wrapper(*args, **kwargs):
             verify_jwt_in_request()
             current_user_id = get_jwt_identity()
-            user = User.query.get(current_user_id)
+            user = User.query.get(int(current_user_id))
             
             if not user:
                 return jsonify({'error': 'User not found'}), 404
@@ -26,4 +26,4 @@ def get_current_user():
     """Get current authenticated user"""
     verify_jwt_in_request()
     current_user_id = get_jwt_identity()
-    return User.query.get(current_user_id)
+    return User.query.get(int(current_user_id))
