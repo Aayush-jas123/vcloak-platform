@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Locations - vcloak Provider</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <style>
+        body {
+            background: var(--bg-secondary);
+        }
+
+        .dashboard-header {
+            background: white;
+            padding: 2rem 0;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 2rem;
+        }
+
+        .dashboard-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-left {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .nav-links a {
+            font-weight: 600;
+            color: var(--text-secondary);
+            transition: color var(--transition-fast);
+        }
+
+        .nav-links a.active {
+            color: var(--primary);
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .filters {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .locations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .location-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border);
+            overflow: hidden;
+            transition: all var(--transition-base);
+        }
+
+        .location-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .location-header {
+            background: linear-gradient(135deg, var(--secondary-light), var(--primary-light));
+            padding: 2rem;
+            text-align: center;
+            font-size: 2.5rem;
+        }
+
+        .location-content {
+            padding: 1.5rem;
+        }
+
+        .location-title {
+            font-size: 1.125rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .location-address {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+
+        .location-meta {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-md);
+        }
+
+        .meta-item {
+            font-size: 0.875rem;
+        }
+
+        .meta-label {
+            color: var(--text-secondary);
+            margin-bottom: 0.25rem;
+        }
+
+        .meta-value {
+            font-weight: 600;
+        }
+
+        .location-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .location-status {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="dashboard-header">
+        <div class="container">
+            <div class="dashboard-nav">
+                <div class="nav-left">
+                    <a href="../index.html" class="logo">vcloak</a>
+                    <div class="nav-links">
+                        <a href="dashboard.html">Dashboard</a>
+                        <a href="locations.html" class="active">My Locations</a>
+                        <a href="bookings.html">Bookings</a>
+                        <a href="earnings.html">Earnings</a>
+                    </div>
+                </div>
+                <div>
+                    <button id="logout-btn" class="btn btn-ghost btn-sm">Logout</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="page-header">
+            <div>
+                <h1>My Storage Locations</h1>
+                <p style="color: var(--text-secondary);">Manage your storage locations</p>
+            </div>
+            <a href="location-form.html" class="btn btn-primary">+ Add New Location</a>
+        </div>
+
+        <div class="filters">
+            <button class="btn btn-sm" id="filter-all">All</button>
+            <button class="btn btn-sm btn-outline" id="filter-active">Active</button>
+            <button class="btn btn-sm btn-outline" id="filter-inactive">Inactive</button>
+            <button class="btn btn-sm btn-outline" id="filter-verified">Verified</button>
+        </div>
+
+        <div id="locations-container">
+            <div class="loading-spinner">
+                <div class="spinner"></div>
+                <p>Loading your locations...</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast-container"></div>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/dashboard-utils.js"></script>
+    <script>
+        if (!requireAuth() || !requireRole('provider')) {
+            // Redirected
+        }
+
+        let allLocations = [];
+        let currentFilter = 'all';
+
+        async function loadLocations() {
+            try {
+                showLoading('locations-container');
+
+                const user = getCurrentUser();
+                const { locations } = await api.getLocations();
+
+                // Filter to only show current provider's locations
+                allLocations = locations.filter(l => l.provider_id === user.id);
+
+                hideLoading('locations-container');
+                renderLocations(allLocations);
+
+            } catch (error) {
+                console.error('Error loading locations:', error);
+                hideLoading('locations-container');
+                document.getElementById('locations-container').innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">⚠️</div>
+                        <p>Failed to load locations. Please try again later.</p>
+                    </div>
+                `;
+                handleApiError(error);
+            }
+        }
+
+        function renderLocations(locations) {
+            const container = document.getElementById('locations-container');
+
+            if (locations.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">📍</div>
+                        <p>No locations found. Add your first storage location to get started!</p>
+                        <a href="location-form.html" class="btn btn-primary" style="margin-top: 1rem;">+ Add Location</a>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = `
+                <div class="locations-grid">
+                    ${locations.map(location => `
+                        <div class="location-card">
+                            <div class="location-header">
+                                📦
+                            </div>
+                            <div class="location-content">
+                                <div class="location-title">${location.business_name}</div>
+                                <div class="location-address">📍 ${location.address}</div>
+
+                                <div class="location-status">
+                                    ${getStatusBadge(location.active ? 'active' : 'inactive')}
+                                    ${location.verified ? getStatusBadge('verified') : '<span class="badge badge-warning">Unverified</span>'}
+                                </div>
+
+                                <div class="location-meta">
+                                    <div class="meta-item">
+                                        <div class="meta-label">Capacity</div>
+                                        <div class="meta-value">${location.capacity} bags</div>
+                                    </div>
+                                    <div class="meta-item">
+                                        <div class="meta-label">Price</div>
+                                        <div class="meta-value">${formatCurrency(location.price_per_hour)}/hr</div>
+                                    </div>
+                                    <div class="meta-item">
+                                        <div class="meta-label">Rating</div>
+                                        <div class="meta-value">⭐ ${location.rating || 'N/A'}</div>
+                                    </div>
+                                    <div class="meta-item">
+                                        <div class="meta-label">Reviews</div>
+                                        <div class="meta-value">${location.total_reviews || 0}</div>
+                                    </div>
+                                </div>
+
+                                <div class="location-actions">
+                                    <a href="location-form.html?id=${location.id}" class="btn btn-sm btn-outline" style="flex: 1;">
+                                        ✏️ Edit
+                                    </a>
+                                    <button onclick="toggleLocationStatus(${location.id}, ${location.active})" 
+                                            class="btn btn-sm ${location.active ? 'btn-ghost' : 'btn-primary'}" style="flex: 1;">
+                                        ${location.active ? '⏸️ Deactivate' : '▶️ Activate'}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        async function toggleLocationStatus(locationId, currentStatus) {
+            try {
+                await api.updateLocation(locationId, { active: !currentStatus });
+                showToast(`Location ${currentStatus ? 'deactivated' : 'activated'} successfully!`, 'success');
+                loadLocations();
+            } catch (error) {
+                console.error('Error toggling location status:', error);
+                handleApiError(error);
+            }
+        }
+
+        function filterLocations(filter) {
+            currentFilter = filter;
+
+            // Update button states
+            document.querySelectorAll('.filters button').forEach(btn => {
+                btn.classList.remove('btn-primary');
+                btn.classList.add('btn-outline');
+            });
+
+            const activeBtn = document.getElementById(`filter-${filter}`);
+            activeBtn.classList.remove('btn-outline');
+            activeBtn.classList.add('btn-primary');
+
+            // Filter locations
+            let filtered = allLocations;
+            if (filter === 'active') {
+                filtered = allLocations.filter(l => l.active);
+            } else if (filter === 'inactive') {
+                filtered = allLocations.filter(l => !l.active);
+            } else if (filter === 'verified') {
+                filtered = allLocations.filter(l => l.verified);
+            }
+
+            renderLocations(filtered);
+        }
+
+        // Event listeners
+        document.getElementById('filter-all').addEventListener('click', () => filterLocations('all'));
+        document.getElementById('filter-active').addEventListener('click', () => filterLocations('active'));
+        document.getElementById('filter-inactive').addEventListener('click', () => filterLocations('inactive'));
+        document.getElementById('filter-verified').addEventListener('click', () => filterLocations('verified'));
+
+        document.getElementById('logout-btn').addEventListener('click', () => api.logout());
+
+        loadLocations();
+    </script>
+</body>
+
+</html>

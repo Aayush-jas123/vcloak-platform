@@ -161,17 +161,23 @@
         </div>
     </div>
 
+    <div id="toast-container"></div>
+
     <script src="../js/api.js"></script>
+    <script src="../js/dashboard-utils.js"></script>
     <script>
         if (!requireAuth() || !requireRole('provider')) {
             // Redirected
         }
 
-        const user = getCurrentUser();
-        document.getElementById('user-name').textContent = user.name;
+        populateUserInfo('user-name');
 
         async function loadDashboard() {
             try {
+                showLoading('bookings-container');
+
+                const user = getCurrentUser();
+
                 // Load locations
                 const { locations } = await api.getLocations();
                 const myLocations = locations.filter(l => l.provider_id === user.id);
@@ -187,7 +193,7 @@
                 const totalEarnings = bookings
                     .filter(b => b.status === 'completed')
                     .reduce((sum, b) => sum + b.total_price, 0);
-                document.getElementById('total-earnings').textContent = `₹${totalEarnings.toFixed(2)}`;
+                document.getElementById('total-earnings').textContent = formatCurrency(totalEarnings);
 
                 // Show today's bookings
                 const today = new Date().toDateString();
@@ -195,31 +201,44 @@
                     new Date(b.check_in).toDateString() === today
                 );
 
+                hideLoading('bookings-container');
+
                 const container = document.getElementById('bookings-container');
                 if (todayBookings.length > 0) {
                     container.innerHTML = todayBookings.map(booking => `
-                        <div class="booking-card">
-                            <div class="booking-header">
-                                <div class="booking-info">
-                                    <div class="booking-title">${booking.location?.business_name}</div>
-                                    <div class="booking-details">
-                                        👤 ${booking.traveler?.name}<br>
-                                        📅 ${new Date(booking.check_in).toLocaleString()}<br>
-                                        💼 ${booking.num_bags} bag(s) • ₹${booking.total_price}
+                        <div class="booking-card" style="padding: 1rem; border: 1px solid var(--border); border-radius: var(--radius-lg); margin-bottom: 1rem;">
+                            <div style="display: flex; justify-content: space-between; align-items: start;">
+                                <div>
+                                    <div style="font-weight: 600; margin-bottom: 0.5rem;">${booking.location?.business_name || 'Location'}</div>
+                                    <div style="font-size: 0.875rem; color: var(--text-secondary);">
+                                        👤 ${booking.traveler?.name || 'N/A'}<br>
+                                        📅 ${formatDateTime(booking.check_in)}<br>
+                                        💼 ${booking.num_bags} bag(s) • ${formatCurrency(booking.total_price)}
                                     </div>
                                 </div>
-                                <span class="badge badge-primary">${booking.status}</span>
+                                ${getStatusBadge(booking.status)}
                             </div>
                         </div>
                     `).join('');
+                } else {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-icon">📦</div>
+                            <p>No bookings for today</p>
+                        </div>
+                    `;
                 }
             } catch (error) {
                 console.error('Error loading dashboard:', error);
-            }
-        }
+                hideLoading('bookings-container');
+                handleApiError(error);
 
-        function handleLogout() {
-            api.logout();
+                // Set stats to 0 on error
+                document.getElementById('total-locations').textContent = '0';
+                document.getElementById('total-bookings').textContent = '0';
+                document.getElementById('active-bookings').textContent = '0';
+                document.getElementById('total-earnings').textContent = formatCurrency(0);
+            }
         }
 
         loadDashboard();

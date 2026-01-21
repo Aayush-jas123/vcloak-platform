@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Location Form - vcloak Provider</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <style>
+        body {
+            background: var(--bg-secondary);
+        }
+
+        .dashboard-header {
+            background: white;
+            padding: 2rem 0;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 2rem;
+        }
+
+        .dashboard-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-left {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .nav-links a {
+            font-weight: 600;
+            color: var(--text-secondary);
+            transition: color var(--transition-fast);
+        }
+
+        .nav-links a.active {
+            color: var(--primary);
+        }
+
+        .form-section {
+            background: white;
+            padding: 2rem;
+            border-radius: var(--radius-lg);
+            margin-bottom: 1.5rem;
+        }
+
+        .form-section h3 {
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 2rem;
+        }
+
+        .amenities-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+
+        .help-text {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="dashboard-header">
+        <div class="container">
+            <div class="dashboard-nav">
+                <div class="nav-left">
+                    <a href="../index.html" class="logo">vcloak</a>
+                    <div class="nav-links">
+                        <a href="dashboard.html">Dashboard</a>
+                        <a href="locations.html" class="active">My Locations</a>
+                        <a href="bookings.html">Bookings</a>
+                        <a href="earnings.html">Earnings</a>
+                    </div>
+                </div>
+                <div>
+                    <button id="logout-btn" class="btn btn-ghost btn-sm">Logout</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container" style="max-width: 800px;">
+        <div style="margin-bottom: 2rem;">
+            <h1 id="page-title">Add New Location</h1>
+            <p style="color: var(--text-secondary);">Fill in the details for your storage location</p>
+        </div>
+
+        <form id="location-form">
+            <div class="form-section">
+                <h3>Basic Information</h3>
+
+                <div class="form-group">
+                    <label for="business_name" class="form-label">Business Name *</label>
+                    <input type="text" id="business_name" name="business_name" class="form-input" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="address" class="form-label">Address *</label>
+                    <input type="text" id="address" name="address" class="form-input" required>
+                    <div class="help-text">Full street address of your storage location</div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="latitude" class="form-label">Latitude *</label>
+                        <input type="number" id="latitude" name="latitude" class="form-input" step="any" required>
+                        <div class="help-text">e.g., 28.6139</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="longitude" class="form-label">Longitude *</label>
+                        <input type="number" id="longitude" name="longitude" class="form-input" step="any" required>
+                        <div class="help-text">e.g., 77.2090</div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="description" class="form-label">Description</label>
+                    <textarea id="description" name="description" class="form-input" rows="4"
+                        placeholder="Describe your storage facility, security features, accessibility, etc."></textarea>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>Pricing & Capacity</h3>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="capacity" class="form-label">Capacity (bags) *</label>
+                        <input type="number" id="capacity" name="capacity" class="form-input" min="1" required>
+                        <div class="help-text">Maximum number of bags you can store</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="price_per_hour" class="form-label">Price per Hour (₹) *</label>
+                        <input type="number" id="price_per_hour" name="price_per_hour" class="form-input" step="0.01"
+                            min="0" required>
+                        <div class="help-text">Price per bag per hour</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>Amenities</h3>
+                <div class="amenities-grid">
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="amenities" value="CCTV">
+                        <span>📹 CCTV Surveillance</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="amenities" value="WiFi">
+                        <span>📶 WiFi Available</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="amenities" value="24/7">
+                        <span>🕐 24/7 Access</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="amenities" value="Climate Control">
+                        <span>❄️ Climate Control</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="amenities" value="Security Guard">
+                        <span>👮 Security Guard</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="amenities" value="Insurance">
+                        <span>🛡️ Insurance Covered</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <a href="locations.html" class="btn btn-ghost">Cancel</a>
+                <button type="submit" class="btn btn-primary" id="submit-btn">
+                    <span id="submit-text">Create Location</span>
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div id="toast-container"></div>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/dashboard-utils.js"></script>
+    <script>
+        if (!requireAuth() || !requireRole('provider')) {
+            // Redirected
+        }
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const locationId = urlParams.get('id');
+        const isEditMode = !!locationId;
+
+        // Update UI for edit mode
+        if (isEditMode) {
+            document.getElementById('page-title').textContent = 'Edit Location';
+            document.getElementById('submit-text').textContent = 'Update Location';
+            loadLocationData();
+        }
+
+        async function loadLocationData() {
+            try {
+                const { location } = await api.getLocation(locationId);
+
+                // Populate form fields
+                document.getElementById('business_name').value = location.business_name || '';
+                document.getElementById('address').value = location.address || '';
+                document.getElementById('latitude').value = location.latitude || '';
+                document.getElementById('longitude').value = location.longitude || '';
+                document.getElementById('description').value = location.description || '';
+                document.getElementById('capacity').value = location.capacity || '';
+                document.getElementById('price_per_hour').value = location.price_per_hour || '';
+
+                // Populate amenities
+                if (location.amenities) {
+                    const amenities = typeof location.amenities === 'string'
+                        ? JSON.parse(location.amenities)
+                        : location.amenities;
+
+                    amenities.forEach(amenity => {
+                        const checkbox = document.querySelector(`input[name="amenities"][value="${amenity}"]`);
+                        if (checkbox) checkbox.checked = true;
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading location:', error);
+                handleApiError(error);
+            }
+        }
+
+        document.getElementById('location-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const submitBtn = document.getElementById('submit-btn');
+            const submitText = document.getElementById('submit-text');
+            const originalText = submitText.textContent;
+
+            try {
+                // Disable button and show loading
+                submitBtn.disabled = true;
+                submitText.textContent = isEditMode ? 'Updating...' : 'Creating...';
+
+                // Collect form data
+                const formData = new FormData(e.target);
+                const locationData = {
+                    business_name: formData.get('business_name'),
+                    address: formData.get('address'),
+                    latitude: parseFloat(formData.get('latitude')),
+                    longitude: parseFloat(formData.get('longitude')),
+                    description: formData.get('description') || '',
+                    capacity: parseInt(formData.get('capacity')),
+                    price_per_hour: parseFloat(formData.get('price_per_hour')),
+                    amenities: formData.getAll('amenities')
+                };
+
+                // Validate coordinates
+                if (isNaN(locationData.latitude) || isNaN(locationData.longitude)) {
+                    throw new Error('Invalid coordinates. Please enter valid latitude and longitude.');
+                }
+
+                if (locationData.latitude < -90 || locationData.latitude > 90) {
+                    throw new Error('Latitude must be between -90 and 90.');
+                }
+
+                if (locationData.longitude < -180 || locationData.longitude > 180) {
+                    throw new Error('Longitude must be between -180 and 180.');
+                }
+
+                // Create or update location
+                if (isEditMode) {
+                    await api.updateLocation(locationId, locationData);
+                    showToast('Location updated successfully!', 'success');
+                } else {
+                    await api.createLocation(locationData);
+                    showToast('Location created successfully!', 'success');
+                }
+
+                // Redirect to locations page after a short delay
+                setTimeout(() => {
+                    window.location.href = 'locations.html';
+                }, 1500);
+
+            } catch (error) {
+                console.error('Error saving location:', error);
+                handleApiError(error);
+
+                // Re-enable button
+                submitBtn.disabled = false;
+                submitText.textContent = originalText;
+            }
+        });
+
+        document.getElementById('logout-btn').addEventListener('click', () => api.logout());
+    </script>
+</body>
+
+</html>
