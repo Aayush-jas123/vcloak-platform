@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Storage - vcloak</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <style>
+        body {
+            background: var(--bg-secondary);
+        }
+
+        .dashboard-header {
+            background: white;
+            padding: 2rem 0;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 2rem;
+        }
+
+        .dashboard-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-left {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .nav-links a {
+            font-weight: 600;
+            color: var(--text-secondary);
+            transition: color var(--transition-fast);
+        }
+
+        .nav-links a.active {
+            color: var(--primary);
+        }
+
+        .search-section {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 3rem;
+            border-radius: var(--radius-xl);
+            margin-bottom: 2rem;
+        }
+
+        .search-section h1 {
+            color: white;
+            margin-bottom: 1rem;
+        }
+
+        .search-box-container {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .search-box-container input {
+            flex: 1;
+        }
+
+        .filters-bar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .locations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .location-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            border: 1px solid var(--border);
+            transition: all var(--transition-base);
+        }
+
+        .location-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .location-image {
+            width: 100%;
+            height: 180px;
+            background: linear-gradient(135deg, var(--primary-light), var(--secondary-light));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+        }
+
+        .location-content {
+            padding: 1.5rem;
+        }
+
+        .location-title {
+            font-size: 1.125rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .location-address {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+
+        .location-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .rating {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .price {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .location-features {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+
+        .feature-tag {
+            background: var(--bg-secondary);
+            padding: 0.25rem 0.75rem;
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="dashboard-header">
+        <div class="container">
+            <div class="dashboard-nav">
+                <div class="nav-left">
+                    <a href="../index.html" class="logo">vcloak</a>
+                    <div class="nav-links">
+                        <a href="dashboard.html">Dashboard</a>
+                        <a href="search.html" class="active">Find Storage</a>
+                        <a href="bookings.html">My Bookings</a>
+                    </div>
+                </div>
+                <div>
+                    <button id="logout-btn" class="btn btn-ghost btn-sm">Logout</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="search-section">
+            <h1>Find Secure Luggage Storage</h1>
+            <p>Store your bags safely and explore hands-free</p>
+            <div class="search-box-container">
+                <input type="text" id="search-input" class="form-input"
+                    placeholder="Search by location, address, or business name...">
+                <button class="btn btn-secondary" onclick="searchLocations()">Search</button>
+            </div>
+        </div>
+
+        <div class="filters-bar">
+            <div class="filter-group">
+                <label>Sort by:</label>
+                <select id="sort-select" class="form-select" style="width: auto;">
+                    <option value="price-low">Price: Low to High</option>
+                    <option value="price-high">Price: High to Low</option>
+                    <option value="rating">Highest Rated</option>
+                    <option value="newest">Newest</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label>
+                    <input type="checkbox" id="verified-only"> Verified Only
+                </label>
+            </div>
+        </div>
+
+        <div id="locations-container">
+            <div class="loading-spinner">
+                <div class="spinner"></div>
+                <p>Loading storage locations...</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast-container"></div>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/dashboard-utils.js"></script>
+    <script>
+        if (!requireAuth() || !requireRole('traveler')) {
+            // Redirected
+        }
+
+        let allLocations = [];
+        let filteredLocations = [];
+
+        async function loadLocations() {
+            try {
+                showLoading('locations-container');
+
+                const { locations } = await api.getLocations();
+                allLocations = locations;
+                filteredLocations = locations;
+
+                hideLoading('locations-container');
+                renderLocations(filteredLocations);
+
+            } catch (error) {
+                console.error('Error loading locations:', error);
+                hideLoading('locations-container');
+                document.getElementById('locations-container').innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">⚠️</div>
+                        <p>Failed to load locations. Please try again later.</p>
+                    </div>
+                `;
+                handleApiError(error);
+            }
+        }
+
+        function renderLocations(locations) {
+            const container = document.getElementById('locations-container');
+
+            if (locations.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">📍</div>
+                        <p>No storage locations found. Try adjusting your search.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = `
+                <div class="locations-grid">
+                    ${locations.map(location => `
+                        <div class="location-card">
+                            <div class="location-image">
+                                📦
+                            </div>
+                            <div class="location-content">
+                                <div class="location-title">${location.business_name}</div>
+                                <div class="location-address">📍 ${location.address}</div>
+
+                                <div class="location-meta">
+                                    <div class="rating">
+                                        ⭐ ${location.rating || '4.5'} (${location.total_reviews || 0})
+                                    </div>
+                                    <div class="price">${formatCurrency(location.price_per_bag)}/bag</div>
+                                </div>
+
+                                <div class="location-features">
+                                    ${location.verified ? '<span class="feature-tag">✓ Verified</span>' : ''}
+                                    <span class="feature-tag">🔒 Secure</span>
+                                    <span class="feature-tag">📸 CCTV</span>
+                                </div>
+
+                                <button class="btn btn-primary" style="width: 100%;" onclick="viewLocation(${location.id})">
+                                    View Details
+                                </button>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function searchLocations() {
+            const query = document.getElementById('search-input').value.toLowerCase();
+
+            filteredLocations = allLocations.filter(loc =>
+                loc.business_name.toLowerCase().includes(query) ||
+                loc.address.toLowerCase().includes(query) ||
+                (loc.description && loc.description.toLowerCase().includes(query))
+            );
+
+            applyFilters();
+        }
+
+        function applyFilters() {
+            let filtered = [...filteredLocations];
+
+            // Verified only filter
+            if (document.getElementById('verified-only').checked) {
+                filtered = filtered.filter(loc => loc.verified);
+            }
+
+            // Sort
+            const sortBy = document.getElementById('sort-select').value;
+            switch (sortBy) {
+                case 'price-low':
+                    filtered.sort((a, b) => a.price_per_bag - b.price_per_bag);
+                    break;
+                case 'price-high':
+                    filtered.sort((a, b) => b.price_per_bag - a.price_per_bag);
+                    break;
+                case 'rating':
+                    filtered.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+                    break;
+                case 'newest':
+                    filtered.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+                    break;
+            }
+
+            renderLocations(filtered);
+        }
+
+        function viewLocation(locationId) {
+            // TODO: Navigate to location details page
+            showToast('Location details page coming soon!', 'info');
+        }
+
+        // Event listeners
+        document.getElementById('search-input').addEventListener('keyup', (e) => {
+            if (e.key === 'Enter') searchLocations();
+        });
+
+        document.getElementById('sort-select').addEventListener('change', applyFilters);
+        document.getElementById('verified-only').addEventListener('change', applyFilters);
+        document.getElementById('logout-btn').addEventListener('click', () => api.logout());
+
+        loadLocations();
+    </script>
+</body>
+
+</html>

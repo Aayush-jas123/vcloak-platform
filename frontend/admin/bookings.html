@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bookings Management - vcloak Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <style>
+        body {
+            background: var(--bg-secondary);
+        }
+
+        .dashboard-header {
+            background: white;
+            padding: 2rem 0;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 2rem;
+        }
+
+        .dashboard-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-left {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .nav-links a {
+            font-weight: 600;
+            color: var(--text-secondary);
+            transition: color var(--transition-fast);
+        }
+
+        .nav-links a.active {
+            color: var(--primary);
+        }
+
+        .filters {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .booking-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border);
+            margin-bottom: 1rem;
+        }
+
+        .booking-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1rem;
+        }
+
+        .booking-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .detail-item {
+            font-size: 0.875rem;
+        }
+
+        .detail-label {
+            color: var(--text-secondary);
+            margin-bottom: 0.25rem;
+        }
+
+        .detail-value {
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="dashboard-header">
+        <div class="container">
+            <div class="dashboard-nav">
+                <div class="nav-left">
+                    <a href="../index.html" class="logo">vcloak</a>
+                    <div class="nav-links">
+                        <a href="dashboard.html">Dashboard</a>
+                        <a href="providers.html">Providers</a>
+                        <a href="users.html">Users</a>
+                        <a href="bookings.html" class="active">Bookings</a>
+                    </div>
+                </div>
+                <div>
+                    <button id="logout-btn" class="btn btn-ghost btn-sm">Logout</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Bookings Management</h2>
+                <p class="card-subtitle">Oversee all platform bookings</p>
+            </div>
+
+            <div class="filters">
+                <button class="btn btn-sm" id="filter-all">All</button>
+                <button class="btn btn-sm btn-outline" id="filter-pending">Pending</button>
+                <button class="btn btn-sm btn-outline" id="filter-confirmed">Confirmed</button>
+                <button class="btn btn-sm btn-outline" id="filter-active">Active</button>
+                <button class="btn btn-sm btn-outline" id="filter-completed">Completed</button>
+                <button class="btn btn-sm btn-outline" id="filter-cancelled">Cancelled</button>
+            </div>
+
+            <div id="bookings-container">
+                <div class="loading-spinner">
+                    <div class="spinner"></div>
+                    <p>Loading bookings...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast-container"></div>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/dashboard-utils.js"></script>
+    <script>
+        if (!requireAuth() || !requireRole('admin')) {
+            // Redirected
+        }
+
+        let allBookings = [];
+        let currentFilter = 'all';
+
+        async function loadBookings() {
+            try {
+                showLoading('bookings-container');
+
+                const { bookings } = await api.getAllBookings();
+                allBookings = bookings;
+
+                hideLoading('bookings-container');
+                renderBookings(allBookings);
+
+            } catch (error) {
+                console.error('Error loading bookings:', error);
+                hideLoading('bookings-container');
+                document.getElementById('bookings-container').innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">⚠️</div>
+                        <p>Failed to load bookings. Please try again later.</p>
+                    </div>
+                `;
+                handleApiError(error);
+            }
+        }
+
+        function renderBookings(bookings) {
+            const container = document.getElementById('bookings-container');
+
+            if (bookings.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">📦</div>
+                        <p>No bookings found.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = bookings.map(booking => `
+                <div class="booking-card">
+                    <div class="booking-header">
+                        <div>
+                            <h3>${booking.location?.business_name || 'Storage Location'}</h3>
+                            <p style="color: var(--text-secondary); font-size: 0.875rem;">
+                                Booking #${booking.id}
+                            </p>
+                        </div>
+                        ${getStatusBadge(booking.status)}
+                    </div>
+
+                    <div class="booking-details">
+                        <div class="detail-item">
+                            <div class="detail-label">Traveler</div>
+                            <div class="detail-value">${booking.traveler?.name || 'N/A'}</div>
+                            <div style="font-size: 0.75rem; color: var(--text-secondary);">
+                                ${booking.traveler?.email || ''}
+                            </div>
+                        </div>
+
+                        <div class="detail-item">
+                            <div class="detail-label">Location</div>
+                            <div class="detail-value">${booking.location?.business_name || 'N/A'}</div>
+                            <div style="font-size: 0.75rem; color: var(--text-secondary);">
+                                ${booking.location?.address || ''}
+                            </div>
+                        </div>
+
+                        <div class="detail-item">
+                            <div class="detail-label">Check-in</div>
+                            <div class="detail-value">${formatDateTime(booking.check_in)}</div>
+                        </div>
+
+                        <div class="detail-item">
+                            <div class="detail-label">Check-out</div>
+                            <div class="detail-value">${formatDateTime(booking.check_out)}</div>
+                        </div>
+
+                        <div class="detail-item">
+                            <div class="detail-label">Bags</div>
+                            <div class="detail-value">${booking.num_bags} bag(s)</div>
+                        </div>
+
+                        <div class="detail-item">
+                            <div class="detail-label">Total Price</div>
+                            <div class="detail-value">${formatCurrency(booking.total_price)}</div>
+                        </div>
+
+                        <div class="detail-item">
+                            <div class="detail-label">Booked On</div>
+                            <div class="detail-value">${formatDate(booking.created_at)}</div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterBookings(filter) {
+            currentFilter = filter;
+
+            // Update button states
+            document.querySelectorAll('.filters button').forEach(btn => {
+                btn.classList.remove('btn-primary');
+                btn.classList.add('btn-outline');
+            });
+
+            const activeBtn = document.getElementById(`filter-${filter}`);
+            activeBtn.classList.remove('btn-outline');
+            activeBtn.classList.add('btn-primary');
+
+            // Filter bookings
+            let filtered = allBookings;
+            if (filter !== 'all') {
+                filtered = allBookings.filter(b => b.status === filter);
+            }
+
+            renderBookings(filtered);
+        }
+
+        // Event listeners
+        document.getElementById('filter-all').addEventListener('click', () => filterBookings('all'));
+        document.getElementById('filter-pending').addEventListener('click', () => filterBookings('pending'));
+        document.getElementById('filter-confirmed').addEventListener('click', () => filterBookings('confirmed'));
+        document.getElementById('filter-active').addEventListener('click', () => filterBookings('active'));
+        document.getElementById('filter-completed').addEventListener('click', () => filterBookings('completed'));
+        document.getElementById('filter-cancelled').addEventListener('click', () => filterBookings('cancelled'));
+
+        document.getElementById('logout-btn').addEventListener('click', () => api.logout());
+
+        loadBookings();
+    </script>
+</body>
+
+</html>
