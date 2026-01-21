@@ -7,7 +7,10 @@ import os
 
 def create_app(config_name='development'):
     """Application factory"""
-    app = Flask(__name__)
+    # Set static folder to frontend directory
+    app = Flask(__name__, 
+                static_folder='../frontend',
+                static_url_path='')
     
     # Load configuration
     app.config.from_object(config[config_name])
@@ -63,8 +66,9 @@ def create_app(config_name='development'):
     def health():
         return jsonify({'status': 'healthy'}), 200
     
-    @app.route('/')
-    def index():
+    # API root
+    @app.route('/api')
+    def api_index():
         return jsonify({
             'message': 'Welcome to vcloak API',
             'version': '1.0.0',
@@ -76,6 +80,15 @@ def create_app(config_name='development'):
                 'admin': '/api/admin'
             }
         }), 200
+    
+    # Serve frontend
+    @app.route('/')
+    def index():
+        return app.send_static_file('index.html')
+    
+    @app.route('/<path:path>')
+    def serve_static(path):
+        return app.send_static_file(path)
     
     return app
 
