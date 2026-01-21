@@ -5,96 +5,185 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register - vcloak</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@700;800;900&display=swap"
-        rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/components.css">
     <style>
-        .auth-container {
+        body {
+            margin: 0;
+            padding: 0;
             min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
             display: flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(135deg, #f0f4ff 0%, #e0f2fe 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                radial-gradient(circle at 20% 50%, rgba(99, 102, 241, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(236, 72, 153, 0.3) 0%, transparent 50%);
+            animation: float 8s ease-in-out infinite;
+        }
+
+        .auth-container {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: 500px;
             padding: 2rem;
         }
 
         .auth-card {
-            background: white;
-            border-radius: var(--radius-xl);
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 24px;
             padding: 3rem;
-            max-width: 450px;
-            width: 100%;
-            box-shadow: var(--shadow-xl);
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+            animation: scaleIn 0.5s ease-out;
         }
 
-        .auth-header {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-
-        .auth-logo {
+        .logo {
             font-family: var(--font-display);
             font-size: 2.5rem;
             font-weight: 900;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            text-align: center;
             margin-bottom: 0.5rem;
+            color: white;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
         }
 
         .auth-subtitle {
-            color: var(--text-secondary);
-        }
-
-        .role-selector {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-
-        .role-option {
-            padding: 1.5rem;
-            border: 2px solid var(--border);
-            border-radius: var(--radius-lg);
             text-align: center;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 2rem;
+            font-size: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-input,
+        .form-select {
+            width: 100%;
+            padding: 1rem 1.25rem;
+            font-size: 1rem;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .form-input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .form-input:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.6);
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+        }
+
+        .form-select {
             cursor: pointer;
-            transition: all var(--transition-base);
         }
 
-        .role-option:hover {
-            border-color: var(--primary);
+        .form-select option {
+            background: #667eea;
+            color: white;
         }
 
-        .role-option.active {
-            border-color: var(--primary);
-            background: rgba(99, 102, 241, 0.05);
-        }
-
-        .role-icon {
-            font-size: 2rem;
+        .form-label {
+            display: block;
             margin-bottom: 0.5rem;
-        }
-
-        .role-title {
+            color: white;
             font-weight: 600;
-            margin-bottom: 0.25rem;
+            font-size: 0.875rem;
         }
 
-        .role-desc {
-            font-size: 0.875rem;
-            color: var(--text-secondary);
+        .btn-auth {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1rem;
+            font-weight: 700;
+            background: white;
+            color: #667eea;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-auth:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
         }
 
         .auth-footer {
             text-align: center;
             margin-top: 1.5rem;
-            color: var(--text-secondary);
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .auth-footer a {
+            color: white;
+            font-weight: 600;
+            text-decoration: none;
+            transition: var(--transition-base);
+        }
+
+        .auth-footer a:hover {
+            text-decoration: underline;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            animation: slideInLeft 0.3s ease-out;
+        }
+
+        .alert-success {
+            background: rgba(16, 185, 129, 0.2);
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            color: white;
+        }
+
+        .alert-danger {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            color: white;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.6s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
         }
     </style>
 </head>
@@ -102,23 +191,8 @@
 <body>
     <div class="auth-container">
         <div class="auth-card">
-            <div class="auth-header">
-                <div class="auth-logo">vcloak</div>
-                <p class="auth-subtitle">Create your account and get started</p>
-            </div>
-
-            <div class="role-selector">
-                <div class="role-option active" data-role="traveler">
-                    <div class="role-icon">🎒</div>
-                    <div class="role-title">Traveler</div>
-                    <div class="role-desc">Find storage</div>
-                </div>
-                <div class="role-option" data-role="provider">
-                    <div class="role-icon">🏪</div>
-                    <div class="role-title">Provider</div>
-                    <div class="role-desc">Offer storage</div>
-                </div>
-            </div>
+            <div class="logo">vcloak</div>
+            <p class="auth-subtitle">Create your account and start storing</p>
 
             <div id="alert-container"></div>
 
@@ -129,31 +203,31 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label" for="email">Email</label>
+                    <label class="form-label" for="email">Email Address</label>
                     <input type="email" id="email" class="form-input" placeholder="you@example.com" required>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label" for="phone">Phone (Optional)</label>
-                    <input type="tel" id="phone" class="form-input" placeholder="+1234567890">
                 </div>
 
                 <div class="form-group">
                     <label class="form-label" for="password">Password</label>
                     <input type="password" id="password" class="form-input" placeholder="••••••••" required
                         minlength="6">
-                    <small class="form-error" style="color: var(--text-secondary);">Minimum 6 characters</small>
                 </div>
 
-                <input type="hidden" id="role" value="traveler">
+                <div class="form-group">
+                    <label class="form-label" for="role">I want to</label>
+                    <select id="role" class="form-select" required>
+                        <option value="traveler">Store my luggage (Traveler)</option>
+                        <option value="provider">Offer storage space (Provider)</option>
+                    </select>
+                </div>
 
-                <button type="submit" class="btn btn-primary" style="width: 100%;" id="register-btn">
+                <button type="submit" class="btn-auth" id="register-btn">
                     Create Account
                 </button>
             </form>
 
             <div class="auth-footer">
-                Already have an account? <a href="login.html">Login</a>
+                Already have an account? <a href="login.html">Sign in</a>
             </div>
         </div>
     </div>
@@ -163,8 +237,6 @@
         const form = document.getElementById('register-form');
         const registerBtn = document.getElementById('register-btn');
         const alertContainer = document.getElementById('alert-container');
-        const roleInput = document.getElementById('role');
-        const roleOptions = document.querySelectorAll('.role-option');
 
         // Check if already logged in
         if (isAuthenticated()) {
@@ -172,34 +244,13 @@
             redirectToDashboard(user.role);
         }
 
-        // Check URL for role parameter
-        const urlParams = new URLSearchParams(window.location.search);
-        const urlRole = urlParams.get('role');
-        if (urlRole === 'provider') {
-            roleOptions.forEach(opt => opt.classList.remove('active'));
-            document.querySelector('[data-role="provider"]').classList.add('active');
-            roleInput.value = 'provider';
-        }
-
-        // Role selection
-        roleOptions.forEach(option => {
-            option.addEventListener('click', () => {
-                roleOptions.forEach(opt => opt.classList.remove('active'));
-                option.classList.add('active');
-                roleInput.value = option.dataset.role;
-            });
-        });
-
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
 
-            const userData = {
-                name: document.getElementById('name').value,
-                email: document.getElementById('email').value,
-                phone: document.getElementById('phone').value,
-                password: document.getElementById('password').value,
-                role: roleInput.value
-            };
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const role = document.getElementById('role').value;
 
             // Clear previous alerts
             alertContainer.innerHTML = '';
@@ -209,7 +260,7 @@
             registerBtn.innerHTML = '<span class="loading"></span> Creating account...';
 
             try {
-                const response = await api.register(userData);
+                const response = await api.register({ name, email, password, role });
 
                 // Show success message
                 alertContainer.innerHTML = `
@@ -221,7 +272,7 @@
                 // Redirect based on role
                 setTimeout(() => {
                     redirectToDashboard(response.user.role);
-                }, 1000);
+                }, 1500);
 
             } catch (error) {
                 alertContainer.innerHTML = `
