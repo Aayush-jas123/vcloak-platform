@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Traveler Dashboard - vcloak</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <style>
+        body {
+            background: var(--bg-secondary);
+        }
+
+        .dashboard-header {
+            background: white;
+            padding: 2rem 0;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 2rem;
+        }
+
+        .dashboard-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-left {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .nav-links a {
+            font-weight: 600;
+            color: var(--text-secondary);
+            transition: color var(--transition-fast);
+        }
+
+        .nav-links a.active {
+            color: var(--primary);
+        }
+
+        .welcome-section {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 3rem;
+            border-radius: var(--radius-xl);
+            margin-bottom: 2rem;
+        }
+
+        .welcome-section h1 {
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        .booking-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border);
+            margin-bottom: 1rem;
+        }
+
+        .booking-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1rem;
+        }
+
+        .booking-info {
+            flex: 1;
+        }
+
+        .booking-title {
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .booking-details {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-secondary);
+        }
+
+        .empty-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="dashboard-header">
+        <div class="container">
+            <div class="dashboard-nav">
+                <div class="nav-left">
+                    <a href="../index.html" class="logo">vcloak</a>
+                    <div class="nav-links">
+                        <a href="dashboard.html" class="active">Dashboard</a>
+                        <a href="search.html">Find Storage</a>
+                        <a href="bookings.html">My Bookings</a>
+                    </div>
+                </div>
+                <div>
+                    <button onclick="handleLogout()" class="btn btn-ghost btn-sm">Logout</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="welcome-section">
+            <h1>Welcome back, <span id="user-name">Traveler</span>!</h1>
+            <p>Find secure luggage storage near you and travel hands-free</p>
+            <a href="search.html" class="btn btn-secondary" style="margin-top: 1rem;">Find Storage Now</a>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value" id="total-bookings">0</div>
+                <div class="stat-label">Total Bookings</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="active-bookings">0</div>
+                <div class="stat-label">Active Bookings</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="completed-bookings">0</div>
+                <div class="stat-label">Completed</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Recent Bookings</h3>
+            </div>
+            <div id="bookings-container">
+                <div class="empty-state">
+                    <div class="empty-icon">📦</div>
+                    <p>No bookings yet. Start by finding storage near you!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/api.js"></script>
+    <script>
+        // Check authentication
+        if (!requireAuth() || !requireRole('traveler')) {
+            // Redirected by functions
+        }
+
+        const user = getCurrentUser();
+        document.getElementById('user-name').textContent = user.name;
+
+        // Load dashboard data
+        async function loadDashboard() {
+            try {
+                const { bookings } = await api.getBookings();
+
+                // Update stats
+                document.getElementById('total-bookings').textContent = bookings.length;
+                document.getElementById('active-bookings').textContent =
+                    bookings.filter(b => b.status === 'confirmed' || b.status === 'active').length;
+                document.getElementById('completed-bookings').textContent =
+                    bookings.filter(b => b.status === 'completed').length;
+
+                // Display recent bookings
+                const container = document.getElementById('bookings-container');
+                if (bookings.length === 0) {
+                    return;
+                }
+
+                container.innerHTML = bookings.slice(0, 5).map(booking => `
+                    <div class="booking-card">
+                        <div class="booking-header">
+                            <div class="booking-info">
+                                <div class="booking-title">${booking.location?.business_name || 'Storage Location'}</div>
+                                <div class="booking-details">
+                                    📍 ${booking.location?.address || 'N/A'}<br>
+                                    📅 ${new Date(booking.check_in).toLocaleDateString()} - ${new Date(booking.check_out).toLocaleDateString()}<br>
+                                    💼 ${booking.num_bags} bag(s) • ₹${booking.total_price}
+                                </div>
+                            </div>
+                            <span class="badge badge-${getStatusColor(booking.status)}">${booking.status}</span>
+                        </div>
+                    </div>
+                `).join('');
+
+            } catch (error) {
+                console.error('Error loading dashboard:', error);
+            }
+        }
+
+        function getStatusColor(status) {
+            const colors = {
+                'pending': 'warning',
+                'confirmed': 'primary',
+                'active': 'success',
+                'completed': 'success',
+                'cancelled': 'danger'
+            };
+            return colors[status] || 'primary';
+        }
+
+        function handleLogout() {
+            api.logout();
+        }
+
+        loadDashboard();
+    </script>
+</body>
+
+</html>

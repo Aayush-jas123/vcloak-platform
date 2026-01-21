@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Provider Dashboard - vcloak</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <style>
+        body {
+            background: var(--bg-secondary);
+        }
+
+        .dashboard-header {
+            background: white;
+            padding: 2rem 0;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 2rem;
+        }
+
+        .dashboard-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-left {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .nav-links a {
+            font-weight: 600;
+            color: var(--text-secondary);
+            transition: color var(--transition-fast);
+        }
+
+        .nav-links a.active {
+            color: var(--primary);
+        }
+
+        .welcome-section {
+            background: linear-gradient(135deg, var(--secondary), var(--secondary-dark));
+            color: white;
+            padding: 3rem;
+            border-radius: var(--radius-xl);
+            margin-bottom: 2rem;
+        }
+
+        .welcome-section h1 {
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="dashboard-header">
+        <div class="container">
+            <div class="dashboard-nav">
+                <div class="nav-left">
+                    <a href="../index.html" class="logo">vcloak</a>
+                    <div class="nav-links">
+                        <a href="dashboard.html" class="active">Dashboard</a>
+                        <a href="locations.html">My Locations</a>
+                        <a href="bookings.html">Bookings</a>
+                        <a href="earnings.html">Earnings</a>
+                    </div>
+                </div>
+                <div>
+                    <button onclick="handleLogout()" class="btn btn-ghost btn-sm">Logout</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="welcome-section">
+            <h1>Welcome, <span id="user-name">Provider</span>!</h1>
+            <p>Manage your storage locations and bookings</p>
+            <a href="locations.html" class="btn btn-primary"
+                style="margin-top: 1rem; background: white; color: var(--secondary);">Manage Locations</a>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value" id="total-locations">0</div>
+                <div class="stat-label">Total Locations</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="total-bookings">0</div>
+                <div class="stat-label">Total Bookings</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="active-bookings">0</div>
+                <div class="stat-label">Active Bookings</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="total-earnings">₹0</div>
+                <div class="stat-label">Total Earnings</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Today's Bookings</h3>
+            </div>
+            <div id="bookings-container">
+                <div class="empty-state">
+                    <div class="empty-icon">📦</div>
+                    <p>No bookings for today</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/api.js"></script>
+    <script>
+        if (!requireAuth() || !requireRole('provider')) {
+            // Redirected
+        }
+
+        const user = getCurrentUser();
+        document.getElementById('user-name').textContent = user.name;
+
+        async function loadDashboard() {
+            try {
+                // Load locations
+                const { locations } = await api.getLocations();
+                const myLocations = locations.filter(l => l.provider_id === user.id);
+                document.getElementById('total-locations').textContent = myLocations.length;
+
+                // Load bookings
+                const { bookings } = await api.getProviderBookings();
+                document.getElementById('total-bookings').textContent = bookings.length;
+                document.getElementById('active-bookings').textContent =
+                    bookings.filter(b => b.status === 'confirmed' || b.status === 'active').length;
+
+                // Calculate earnings
+                const totalEarnings = bookings
+                    .filter(b => b.status === 'completed')
+                    .reduce((sum, b) => sum + b.total_price, 0);
+                document.getElementById('total-earnings').textContent = `₹${totalEarnings.toFixed(2)}`;
+
+                // Show today's bookings
+                const today = new Date().toDateString();
+                const todayBookings = bookings.filter(b =>
+                    new Date(b.check_in).toDateString() === today
+                );
+
+                const container = document.getElementById('bookings-container');
+                if (todayBookings.length > 0) {
+                    container.innerHTML = todayBookings.map(booking => `
+                        <div class="booking-card">
+                            <div class="booking-header">
+                                <div class="booking-info">
+                                    <div class="booking-title">${booking.location?.business_name}</div>
+                                    <div class="booking-details">
+                                        👤 ${booking.traveler?.name}<br>
+                                        📅 ${new Date(booking.check_in).toLocaleString()}<br>
+                                        💼 ${booking.num_bags} bag(s) • ₹${booking.total_price}
+                                    </div>
+                                </div>
+                                <span class="badge badge-primary">${booking.status}</span>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            } catch (error) {
+                console.error('Error loading dashboard:', error);
+            }
+        }
+
+        function handleLogout() {
+            api.logout();
+        }
+
+        loadDashboard();
+    </script>
+</body>
+
+</html>

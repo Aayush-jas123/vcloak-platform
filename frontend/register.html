@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - vcloak</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/components.css">
+    <style>
+        .auth-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #f0f4ff 0%, #e0f2fe 100%);
+            padding: 2rem;
+        }
+
+        .auth-card {
+            background: white;
+            border-radius: var(--radius-xl);
+            padding: 3rem;
+            max-width: 450px;
+            width: 100%;
+            box-shadow: var(--shadow-xl);
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .auth-logo {
+            font-family: var(--font-display);
+            font-size: 2.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .auth-subtitle {
+            color: var(--text-secondary);
+        }
+
+        .role-selector {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .role-option {
+            padding: 1.5rem;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-lg);
+            text-align: center;
+            cursor: pointer;
+            transition: all var(--transition-base);
+        }
+
+        .role-option:hover {
+            border-color: var(--primary);
+        }
+
+        .role-option.active {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.05);
+        }
+
+        .role-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .role-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .role-desc {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .auth-footer {
+            text-align: center;
+            margin-top: 1.5rem;
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <div class="auth-logo">vcloak</div>
+                <p class="auth-subtitle">Create your account and get started</p>
+            </div>
+
+            <div class="role-selector">
+                <div class="role-option active" data-role="traveler">
+                    <div class="role-icon">🎒</div>
+                    <div class="role-title">Traveler</div>
+                    <div class="role-desc">Find storage</div>
+                </div>
+                <div class="role-option" data-role="provider">
+                    <div class="role-icon">🏪</div>
+                    <div class="role-title">Provider</div>
+                    <div class="role-desc">Offer storage</div>
+                </div>
+            </div>
+
+            <div id="alert-container"></div>
+
+            <form id="register-form">
+                <div class="form-group">
+                    <label class="form-label" for="name">Full Name</label>
+                    <input type="text" id="name" class="form-input" placeholder="John Doe" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="email">Email</label>
+                    <input type="email" id="email" class="form-input" placeholder="you@example.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="phone">Phone (Optional)</label>
+                    <input type="tel" id="phone" class="form-input" placeholder="+1234567890">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="password">Password</label>
+                    <input type="password" id="password" class="form-input" placeholder="••••••••" required
+                        minlength="6">
+                    <small class="form-error" style="color: var(--text-secondary);">Minimum 6 characters</small>
+                </div>
+
+                <input type="hidden" id="role" value="traveler">
+
+                <button type="submit" class="btn btn-primary" style="width: 100%;" id="register-btn">
+                    Create Account
+                </button>
+            </form>
+
+            <div class="auth-footer">
+                Already have an account? <a href="login.html">Login</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script>
+        const form = document.getElementById('register-form');
+        const registerBtn = document.getElementById('register-btn');
+        const alertContainer = document.getElementById('alert-container');
+        const roleInput = document.getElementById('role');
+        const roleOptions = document.querySelectorAll('.role-option');
+
+        // Check if already logged in
+        if (isAuthenticated()) {
+            const user = getCurrentUser();
+            redirectToDashboard(user.role);
+        }
+
+        // Check URL for role parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlRole = urlParams.get('role');
+        if (urlRole === 'provider') {
+            roleOptions.forEach(opt => opt.classList.remove('active'));
+            document.querySelector('[data-role="provider"]').classList.add('active');
+            roleInput.value = 'provider';
+        }
+
+        // Role selection
+        roleOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                roleOptions.forEach(opt => opt.classList.remove('active'));
+                option.classList.add('active');
+                roleInput.value = option.dataset.role;
+            });
+        });
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const userData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                password: document.getElementById('password').value,
+                role: roleInput.value
+            };
+
+            // Clear previous alerts
+            alertContainer.innerHTML = '';
+
+            // Disable button
+            registerBtn.disabled = true;
+            registerBtn.innerHTML = '<span class="loading"></span> Creating account...';
+
+            try {
+                const response = await api.register(userData);
+
+                // Show success message
+                alertContainer.innerHTML = `
+                    <div class="alert alert-success">
+                        Account created successfully! Redirecting...
+                    </div>
+                `;
+
+                // Redirect based on role
+                setTimeout(() => {
+                    redirectToDashboard(response.user.role);
+                }, 1000);
+
+            } catch (error) {
+                alertContainer.innerHTML = `
+                    <div class="alert alert-danger">
+                        ${error.message || 'Registration failed. Please try again.'}
+                    </div>
+                `;
+
+                registerBtn.disabled = false;
+                registerBtn.textContent = 'Create Account';
+            }
+        });
+
+        function redirectToDashboard(role) {
+            switch (role) {
+                case 'traveler':
+                    window.location.href = 'traveler/dashboard.html';
+                    break;
+                case 'provider':
+                    window.location.href = 'provider/dashboard.html';
+                    break;
+                case 'admin':
+                    window.location.href = 'admin/dashboard.html';
+                    break;
+                default:
+                    window.location.href = 'index.html';
+            }
+        }
+    </script>
+</body>
+
+</html>
