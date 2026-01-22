@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Layover Planner - vcloak</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <style>
+        body {
+            background: var(--bg-secondary);
+        }
+
+        .planner-hero {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 4rem 2rem;
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .planner-hero h1 {
+            color: white;
+            margin-bottom: 1rem;
+        }
+
+        .time-input-section {
+            background: white;
+            padding: 3rem;
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-lg);
+            margin-bottom: 3rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .time-slider-container {
+            margin: 2rem 0;
+        }
+
+        .time-display {
+            font-size: 3rem;
+            font-weight: 900;
+            text-align: center;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+
+        .time-slider {
+            width: 100%;
+            height: 8px;
+            border-radius: 5px;
+            background: linear-gradient(to right, #667eea, #764ba2);
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .time-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: white;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .itinerary-card {
+            background: white;
+            border-radius: var(--radius-xl);
+            padding: 2.5rem;
+            box-shadow: var(--shadow-lg);
+            margin-bottom: 2rem;
+        }
+
+        .activity-timeline {
+            position: relative;
+            padding-left: 3rem;
+        }
+
+        .activity-item {
+            position: relative;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+            border-left: 4px solid var(--primary);
+        }
+
+        .activity-item::before {
+            content: '';
+            position: absolute;
+            left: -3rem;
+            top: 1.5rem;
+            width: 16px;
+            height: 16px;
+            background: var(--primary);
+            border-radius: 50%;
+            border: 3px solid white;
+            box-shadow: 0 0 0 3px var(--primary);
+        }
+
+        .activity-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--gradient-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .activity-time {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .activity-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .activity-description {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .activity-meta {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+
+        .meta-tag {
+            background: white;
+            padding: 0.375rem 0.875rem;
+            border-radius: var(--radius-full);
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .affiliate-card {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            color: white;
+            padding: 1.5rem;
+            border-radius: var(--radius-lg);
+            margin-top: 1rem;
+        }
+
+        .price-tag {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+
+        .commission-badge {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.375rem 0.875rem;
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            display: inline-block;
+            margin-top: 0.5rem;
+        }
+
+        .total-summary {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 2rem;
+            border-radius: var(--radius-xl);
+            margin-top: 2rem;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .summary-item {
+            text-align: center;
+        }
+
+        .summary-value {
+            font-size: 2rem;
+            font-weight: 900;
+            margin-bottom: 0.25rem;
+        }
+
+        .summary-label {
+            font-size: 0.875rem;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="planner-hero">
+        <div class="container">
+            <h1>🧳 Smart Layover Planner</h1>
+            <p>Drop your bags and discover the city. We'll plan your perfect micro-adventure.</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Time Input Section -->
+        <div class="time-input-section">
+            <h2 style="text-align: center; margin-bottom: 1rem;">How much time do you have?</h2>
+            <p style="text-align: center; color: var(--text-secondary); margin-bottom: 2rem;">
+                Slide to set your available time, and we'll create the perfect itinerary
+            </p>
+
+            <div class="time-slider-container">
+                <div class="time-display" id="time-display">3 hours</div>
+                <input type="range" min="1" max="8" value="3" class="time-slider" id="time-slider">
+                <div
+                    style="display: flex; justify-content: space-between; margin-top: 0.5rem; color: var(--text-secondary); font-size: 0.875rem;">
+                    <span>1 hour</span>
+                    <span>8 hours</span>
+                </div>
+            </div>
+
+            <div style="margin-top: 2rem;">
+                <label class="form-label">Current Location</label>
+                <input type="text" class="form-input" id="location-input" placeholder="e.g., Central Station, Mumbai"
+                    value="Connaught Place, Delhi">
+            </div>
+
+            <button class="btn btn-primary" style="width: 100%; margin-top: 1.5rem;" onclick="generateItinerary()">
+                ✨ Generate My Perfect Day
+            </button>
+        </div>
+
+        <!-- Generated Itinerary -->
+        <div id="itinerary-container" style="display: none;">
+            <div class="itinerary-card">
+                <h2 style="margin-bottom: 0.5rem;">Your Personalized Itinerary</h2>
+                <p style="color: var(--text-secondary); margin-bottom: 2rem;">
+                    Based on <span id="selected-hours">3</span> hours of free time near <span
+                        id="selected-location">Connaught Place</span>
+                </p>
+
+                <div class="activity-timeline" id="timeline">
+                    <!-- Activities will be generated here -->
+                </div>
+
+                <!-- Total Summary -->
+                <div class="total-summary">
+                    <h3 style="text-align: center; margin-bottom: 0.5rem;">Your Adventure Summary</h3>
+                    <div class="summary-grid">
+                        <div class="summary-item">
+                            <div class="summary-value" id="total-activities">5</div>
+                            <div class="summary-label">Activities</div>
+                        </div>
+                        <div class="summary-item">
+                            <div class="summary-value" id="total-distance">2.5 km</div>
+                            <div class="summary-label">Walking</div>
+                        </div>
+                        <div class="summary-item">
+                            <div class="summary-value" id="total-cost">₹850</div>
+                            <div class="summary-label">Est. Cost</div>
+                        </div>
+                        <div class="summary-item">
+                            <div class="summary-value" id="commission-earned">₹127</div>
+                            <div class="summary-label">Our Commission</div>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-glass" style="width: 100%; margin-top: 2rem;">
+                        📱 Send to My Phone
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const timeSlider = document.getElementById('time-slider');
+        const timeDisplay = document.getElementById('time-display');
+
+        timeSlider.addEventListener('input', (e) => {
+            const hours = e.target.value;
+            timeDisplay.textContent = `${hours} hour${hours > 1 ? 's' : ''}`;
+        });
+
+        // Sample activities database (in production, this would come from Google Places API + our affiliate partners)
+        const activitiesDatabase = {
+            'Connaught Place, Delhi': [
+                {
+                    icon: '🏛️',
+                    title: 'National Museum',
+                    description: 'Explore 5,000 years of Indian history and culture',
+                    duration: 90,
+                    distance: '1.2 km',
+                    walkTime: '15 min',
+                    price: 350,
+                    commission: 15,
+                    category: 'Culture',
+                    affiliateLink: 'https://museum.gov.in/book'
+                },
+                {
+                    icon: '☕',
+                    title: 'Indian Coffee House',
+                    description: 'Iconic café serving authentic South Indian filter coffee',
+                    duration: 30,
+                    distance: '0.3 km',
+                    walkTime: '5 min',
+                    price: 150,
+                    commission: 10,
+                    category: 'Food'
+                },
+                {
+                    icon: '🛍️',
+                    title: 'Janpath Market',
+                    description: 'Vibrant street market for handicrafts and souvenirs',
+                    duration: 60,
+                    distance: '0.5 km',
+                    walkTime: '7 min',
+                    price: 0,
+                    commission: 0,
+                    category: 'Shopping'
+                },
+                {
+                    icon: '🍽️',
+                    title: 'Saravana Bhavan',
+                    description: 'Authentic South Indian vegetarian cuisine',
+                    duration: 45,
+                    distance: '0.4 km',
+                    walkTime: '6 min',
+                    price: 350,
+                    commission: 12,
+                    category: 'Food'
+                },
+                {
+                    icon: '🌳',
+                    title: 'Lodhi Gardens',
+                    description: 'Historic park with 15th-century monuments',
+                    duration: 60,
+                    distance: '2.5 km',
+                    walkTime: '10 min by auto',
+                    price: 0,
+                    commission: 0,
+                    category: 'Nature'
+                }
+            ]
+        };
+
+        function generateItinerary() {
+            const hours = parseInt(timeSlider.value);
+            const location = document.getElementById('location-input').value;
+            const availableMinutes = hours * 60;
+
+            // Get activities for location
+            const activities = activitiesDatabase[location] || activitiesDatabase['Connaught Place, Delhi'];
+
+            // Smart algorithm: fit activities within time budget
+            let selectedActivities = [];
+            let totalTime = 0;
+            let totalCost = 0;
+            let totalCommission = 0;
+            let totalDistance = 0;
+
+            // Always start with storage
+            selectedActivities.push({
+                icon: '🧳',
+                title: 'Drop Bags at vcloak',
+                description: 'Secure storage at our verified partner location',
+                duration: 5,
+                distance: '0 km',
+                walkTime: 'You are here',
+                price: 75,
+                commission: 0,
+                category: 'Storage',
+                time: '10:00 AM'
+            });
+            totalTime += 5;
+            totalCost += 75;
+
+            let currentTime = new Date();
+            currentTime.setHours(10, 5, 0); // Start at 10:05 AM
+
+            // Add activities that fit
+            for (let activity of activities) {
+                if (totalTime + activity.duration + 15 < availableMinutes) { // 15 min buffer
+                    currentTime.setMinutes(currentTime.getMinutes() + (activity.walkTime.includes('min') ? parseInt(activity.walkTime) : 10));
+
+                    selectedActivities.push({
+                        ...activity,
+                        time: currentTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
+                    });
+
+                    totalTime += activity.duration + parseInt(activity.walkTime || 10);
+                    totalCost += activity.price;
+                    totalCommission += (activity.price * activity.commission / 100);
+                    totalDistance += parseFloat(activity.distance);
+
+                    currentTime.setMinutes(currentTime.getMinutes() + activity.duration);
+                }
+            }
+
+            // Add return to pickup
+            currentTime.setMinutes(currentTime.getMinutes() + 10);
+            selectedActivities.push({
+                icon: '🎒',
+                title: 'Pickup Your Bags',
+                description: 'Return to vcloak and continue your journey',
+                duration: 5,
+                distance: '0 km',
+                walkTime: 'Return',
+                price: 0,
+                commission: 0,
+                category: 'Storage',
+                time: currentTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
+            });
+
+            // Render itinerary
+            renderItinerary(selectedActivities, hours, location, totalCost, totalCommission, totalDistance);
+        }
+
+        function renderItinerary(activities, hours, location, totalCost, commission, distance) {
+            const timeline = document.getElementById('timeline');
+
+            timeline.innerHTML = activities.map(activity => `
+                <div class="activity-item">
+                    <div class="activity-time">${activity.time}</div>
+                    <div style="display: flex; gap: 1.5rem; align-items: start;">
+                        <div class="activity-icon">${activity.icon}</div>
+                        <div style="flex: 1;">
+                            <div class="activity-title">${activity.title}</div>
+                            <div class="activity-description">${activity.description}</div>
+                            
+                            <div class="activity-meta">
+                                <div class="meta-tag">⏱️ ${activity.duration} min</div>
+                                <div class="meta-tag">🚶 ${activity.walkTime}</div>
+                                ${activity.price > 0 ? `<div class="meta-tag">💰 ₹${activity.price}</div>` : ''}
+                            </div>
+
+                            ${activity.affiliateLink ? `
+                                <div class="affiliate-card">
+                                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                                        <div>
+                                            <div class="price-tag">₹${activity.price}</div>
+                                            <div>Book now and skip the line</div>
+                                            <div class="commission-badge">We earn ₹${(activity.price * activity.commission / 100).toFixed(0)} commission</div>
+                                        </div>
+                                        <button class="btn btn-glass">Book Now →</button>
+                                    </div>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            // Update summary
+            document.getElementById('selected-hours').textContent = hours;
+            document.getElementById('selected-location').textContent = location;
+            document.getElementById('total-activities').textContent = activities.length;
+            document.getElementById('total-distance').textContent = distance.toFixed(1) + ' km';
+            document.getElementById('total-cost').textContent = '₹' + totalCost;
+            document.getElementById('commission-earned').textContent = '₹' + commission.toFixed(0);
+
+            // Show itinerary
+            document.getElementById('itinerary-container').style.display = 'block';
+            document.getElementById('itinerary-container').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Auto-generate on page load
+        window.addEventListener('load', () => {
+            setTimeout(generateItinerary, 500);
+        });
+    </script>
+</body>
+
+</html>
