@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add-On Services - vcloak</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <style>
+        body {
+            background: var(--bg-secondary);
+        }
+
+        .services-hero {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 4rem 2rem;
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .services-hero h1 {
+            color: white;
+            margin-bottom: 1rem;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .service-card {
+            background: white;
+            border-radius: var(--radius-xl);
+            padding: 2rem;
+            box-shadow: var(--shadow-md);
+            transition: var(--transition-smooth);
+            border: 2px solid transparent;
+        }
+
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-xl);
+            border-color: var(--primary);
+        }
+
+        .service-card.selected {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.05);
+        }
+
+        .service-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--gradient-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            margin: 0 auto 1.5rem;
+            box-shadow: var(--shadow-glow);
+        }
+
+        .service-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        .service-price {
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .service-description {
+            color: var(--text-secondary);
+            text-align: center;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .service-features {
+            list-style: none;
+            margin-bottom: 1.5rem;
+        }
+
+        .service-features li {
+            padding: 0.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .bundles-section {
+            background: white;
+            padding: 3rem 2rem;
+            border-radius: var(--radius-xl);
+            margin-bottom: 3rem;
+        }
+
+        .bundle-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2.5rem;
+            border-radius: var(--radius-xl);
+            margin-bottom: 2rem;
+        }
+
+        .bundle-card h3 {
+            color: white;
+            margin-bottom: 1rem;
+        }
+
+        .bundle-savings {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-full);
+            display: inline-block;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .cart-summary {
+            position: sticky;
+            top: 2rem;
+            background: white;
+            padding: 2rem;
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .cart-total {
+            display: flex;
+            justify-content: space-between;
+            padding: 1rem 0;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            border-top: 2px solid var(--primary);
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="services-hero">
+        <div class="container">
+            <h1>Premium Add-On Services</h1>
+            <p>Enhance your storage experience with luxury services</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div style="display: grid; grid-template-columns: 1fr 350px; gap: 2rem;">
+            <!-- Services Grid -->
+            <div>
+                <h2 style="margin-bottom: 2rem;">Available Services</h2>
+
+                <div class="services-grid">
+                    <!-- Luggage Delivery -->
+                    <div class="service-card" data-service="delivery" data-price="300">
+                        <div class="service-icon">🚚</div>
+                        <h3 class="service-name">Luggage Delivery</h3>
+                        <div class="service-price">₹200-500</div>
+                        <p class="service-description">
+                            We'll deliver your luggage to your hotel or airport
+                        </p>
+                        <ul class="service-features">
+                            <li>✓ Same-day delivery</li>
+                            <li>✓ Real-time tracking</li>
+                            <li>✓ Insured transport</li>
+                            <li>✓ Contactless delivery</li>
+                        </ul>
+                        <button class="btn btn-outline" style="width: 100%;" onclick="toggleService('delivery', 300)">
+                            Add Service
+                        </button>
+                    </div>
+
+                    <!-- Luggage Cleaning -->
+                    <div class="service-card" data-service="cleaning" data-price="150">
+                        <div class="service-icon">✨</div>
+                        <h3 class="service-name">Luggage Cleaning</h3>
+                        <div class="service-price">₹150</div>
+                        <p class="service-description">
+                            Professional cleaning and sanitization of your bags
+                        </p>
+                        <ul class="service-features">
+                            <li>✓ Deep cleaning</li>
+                            <li>✓ Sanitization</li>
+                            <li>✓ Odor removal</li>
+                            <li>✓ Eco-friendly products</li>
+                        </ul>
+                        <button class="btn btn-outline" style="width: 100%;" onclick="toggleService('cleaning', 150)">
+                            Add Service
+                        </button>
+                    </div>
+
+                    <!-- Wrapping Service -->
+                    <div class="service-card" data-service="wrapping" data-price="50">
+                        <div class="service-icon">📦</div>
+                        <h3 class="service-name">Protective Wrapping</h3>
+                        <div class="service-price">₹50</div>
+                        <p class="service-description">
+                            Secure wrapping to protect your luggage
+                        </p>
+                        <ul class="service-features">
+                            <li>✓ Industrial-grade wrap</li>
+                            <li>✓ Tamper-proof</li>
+                            <li>✓ Weather protection</li>
+                            <li>✓ Quick service</li>
+                        </ul>
+                        <button class="btn btn-outline" style="width: 100%;" onclick="toggleService('wrapping', 50)">
+                            Add Service
+                        </button>
+                    </div>
+
+                    <!-- Lock & Key -->
+                    <div class="service-card" data-service="lock" data-price="100">
+                        <div class="service-icon">🔐</div>
+                        <h3 class="service-name">Lock & Key</h3>
+                        <div class="service-price">₹100</div>
+                        <p class="service-description">
+                            Premium lock for extra security
+                        </p>
+                        <ul class="service-features">
+                            <li>✓ TSA-approved lock</li>
+                            <li>✓ Duplicate key provided</li>
+                            <li>✓ Tamper-evident</li>
+                            <li>✓ Lifetime warranty</li>
+                        </ul>
+                        <button class="btn btn-outline" style="width: 100%;" onclick="toggleService('lock', 100)">
+                            Add Service
+                        </button>
+                    </div>
+
+                    <!-- Priority Pickup -->
+                    <div class="service-card" data-service="priority" data-price="150">
+                        <div class="service-icon">⚡</div>
+                        <h3 class="service-name">Priority Pickup</h3>
+                        <div class="service-price">₹150</div>
+                        <p class="service-description">
+                            Skip the queue with express pickup
+                        </p>
+                        <ul class="service-features">
+                            <li>✓ No waiting time</li>
+                            <li>✓ Dedicated counter</li>
+                            <li>✓ VIP treatment</li>
+                            <li>✓ Instant service</li>
+                        </ul>
+                        <button class="btn btn-outline" style="width: 100%;" onclick="toggleService('priority', 150)">
+                            Add Service
+                        </button>
+                    </div>
+
+                    <!-- Insurance Upgrade -->
+                    <div class="service-card" data-service="insurance" data-price="100">
+                        <div class="service-icon">🛡️</div>
+                        <h3 class="service-name">Insurance Upgrade</h3>
+                        <div class="service-price">₹100</div>
+                        <p class="service-description">
+                            Extended coverage up to ₹1,00,000
+                        </p>
+                        <ul class="service-features">
+                            <li>✓ Comprehensive coverage</li>
+                            <li>✓ Instant claims</li>
+                            <li>✓ Zero deductible</li>
+                            <li>✓ 24/7 support</li>
+                        </ul>
+                        <button class="btn btn-outline" style="width: 100%;" onclick="toggleService('insurance', 100)">
+                            Add Service
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Service Bundles -->
+                <div class="bundles-section">
+                    <h2 style="margin-bottom: 2rem;">Popular Bundles</h2>
+
+                    <div class="bundle-card">
+                        <div class="bundle-savings">SAVE 20%</div>
+                        <h3>Traveler's Essential Bundle</h3>
+                        <p style="margin-bottom: 1rem; opacity: 0.95;">Delivery + Cleaning + Wrapping</p>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <span style="text-decoration: line-through; opacity: 0.7;">₹500</span>
+                                <span style="font-size: 2rem; font-weight: 800; margin-left: 1rem;">₹400</span>
+                            </div>
+                            <button class="btn btn-glass">Add Bundle</button>
+                        </div>
+                    </div>
+
+                    <div class="bundle-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                        <div class="bundle-savings">SAVE 25%</div>
+                        <h3>VIP Complete Package</h3>
+                        <p style="margin-bottom: 1rem; opacity: 0.95;">All services included</p>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <span style="text-decoration: line-through; opacity: 0.7;">₹850</span>
+                                <span style="font-size: 2rem; font-weight: 800; margin-left: 1rem;">₹650</span>
+                            </div>
+                            <button class="btn btn-glass">Add Bundle</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cart Summary -->
+            <div>
+                <div class="cart-summary">
+                    <h3 style="margin-bottom: 1.5rem;">Your Cart</h3>
+
+                    <div id="cart-items">
+                        <div class="empty-state" style="padding: 2rem 0;">
+                            <div style="text-align: center; color: var(--text-secondary);">
+                                <div style="font-size: 3rem; margin-bottom: 0.5rem;">🛒</div>
+                                <p>No services added yet</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="cart-total" id="cart-total" style="display: none;">
+                        <span>Total:</span>
+                        <span id="total-amount">₹0</span>
+                    </div>
+
+                    <button class="btn btn-primary" style="width: 100%; margin-top: 1rem;" id="checkout-btn" disabled>
+                        Proceed to Checkout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let selectedServices = {};
+        let totalAmount = 0;
+
+        function toggleService(serviceId, price) {
+            const card = document.querySelector(`[data-service="${serviceId}"]`);
+            const button = card.querySelector('button');
+
+            if (selectedServices[serviceId]) {
+                // Remove service
+                delete selectedServices[serviceId];
+                card.classList.remove('selected');
+                button.textContent = 'Add Service';
+                button.classList.remove('btn-primary');
+                button.classList.add('btn-outline');
+            } else {
+                // Add service
+                selectedServices[serviceId] = {
+                    name: card.querySelector('.service-name').textContent,
+                    price: price
+                };
+                card.classList.add('selected');
+                button.textContent = 'Remove';
+                button.classList.remove('btn-outline');
+                button.classList.add('btn-primary');
+            }
+
+            updateCart();
+        }
+
+        function updateCart() {
+            const cartItems = document.getElementById('cart-items');
+            const cartTotal = document.getElementById('cart-total');
+            const checkoutBtn = document.getElementById('checkout-btn');
+            const totalAmountEl = document.getElementById('total-amount');
+
+            const serviceCount = Object.keys(selectedServices).length;
+
+            if (serviceCount === 0) {
+                cartItems.innerHTML = `
+                    <div class="empty-state" style="padding: 2rem 0;">
+                        <div style="text-align: center; color: var(--text-secondary);">
+                            <div style="font-size: 3rem; margin-bottom: 0.5rem;">🛒</div>
+                            <p>No services added yet</p>
+                        </div>
+                    </div>
+                `;
+                cartTotal.style.display = 'none';
+                checkoutBtn.disabled = true;
+                return;
+            }
+
+            // Calculate total
+            totalAmount = Object.values(selectedServices).reduce((sum, service) => sum + service.price, 0);
+
+            // Render cart items
+            cartItems.innerHTML = Object.entries(selectedServices).map(([id, service]) => `
+                <div class="cart-item">
+                    <span>${service.name}</span>
+                    <span style="font-weight: 600;">₹${service.price}</span>
+                </div>
+            `).join('');
+
+            // Show total
+            cartTotal.style.display = 'flex';
+            totalAmountEl.textContent = `₹${totalAmount}`;
+            checkoutBtn.disabled = false;
+        }
+
+        document.getElementById('checkout-btn').addEventListener('click', () => {
+            alert(`Proceeding to checkout with ${Object.keys(selectedServices).length} services (₹${totalAmount})`);
+            // In production, this would navigate to booking page with selected services
+        });
+    </script>
+</body>
+
+</html>

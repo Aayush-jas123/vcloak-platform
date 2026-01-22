@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Provider Packages - vcloak</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .packages-hero {
+            text-align: center;
+            padding: 4rem 0 3rem;
+            color: white;
+        }
+
+        .packages-hero h1 {
+            font-size: clamp(2.5rem, 5vw, 3.5rem);
+            margin-bottom: 1rem;
+            color: white;
+        }
+
+        .packages-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto 4rem;
+            padding: 0 2rem;
+        }
+
+        .package-card {
+            background: white;
+            border-radius: var(--radius-2xl);
+            padding: 2.5rem;
+            box-shadow: var(--shadow-xl);
+            transition: var(--transition-smooth);
+            position: relative;
+        }
+
+        .package-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: var(--gradient-primary);
+        }
+
+        .package-card.featured {
+            transform: scale(1.05);
+            box-shadow: var(--shadow-2xl);
+        }
+
+        .package-card.featured::before {
+            height: 8px;
+            background: var(--gradient-secondary);
+        }
+
+        .package-card:hover {
+            transform: translateY(-10px) scale(1.02);
+        }
+
+        .package-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-full);
+            font-size: 0.875rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+        }
+
+        .package-badge.basic {
+            background: linear-gradient(135deg, #94a3b8, #cbd5e1);
+            color: white;
+        }
+
+        .package-badge.premium {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .package-badge.vip {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            color: white;
+        }
+
+        .package-name {
+            font-size: 2rem;
+            font-weight: 900;
+            margin-bottom: 0.5rem;
+        }
+
+        .package-price {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .package-price span {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .package-commission {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-lg);
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .package-features {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+
+        .package-features li {
+            padding: 0.75rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .revenue-calculator {
+            background: white;
+            padding: 3rem 2rem;
+            border-radius: var(--radius-xl);
+            margin-bottom: 3rem;
+        }
+
+        .calculator-input {
+            margin-bottom: 1.5rem;
+        }
+
+        .calculator-result {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 2rem;
+            border-radius: var(--radius-lg);
+            text-align: center;
+        }
+
+        .result-value {
+            font-size: 3rem;
+            font-weight: 900;
+            margin: 1rem 0;
+        }
+
+        .benefits-section {
+            background: white;
+            padding: 4rem 2rem;
+            margin-top: 4rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="packages-hero">
+        <div class="container">
+            <h1>Provider Premium Packages</h1>
+            <p>Maximize your revenue with our premium plans</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Packages Grid -->
+        <div class="packages-grid">
+            <!-- Basic Package -->
+            <div class="package-card">
+                <div class="package-badge basic">📦 Basic</div>
+                <h2 class="package-name">Basic</h2>
+                <div class="package-price">FREE</div>
+                <div class="package-commission">15% Commission</div>
+                <p style="color: var(--text-secondary); margin-bottom: 2rem;">
+                    Perfect for getting started
+                </p>
+
+                <ul class="package-features">
+                    <li>
+                        <span style="color: var(--success);">✓</span>
+                        <span>Standard listing</span>
+                    </li>
+                    <li>
+                        <span style="color: var(--success);">✓</span>
+                        <span>Basic amenities</span>
+                    </li>
+                    <li>
+                        <span style="color: var(--success);">✓</span>
+                        <span>Email support</span>
+                    </li>
+                    <li>
+                        <span style="color: var(--success);">✓</span>
+                        <span>Basic analytics</span>
+                    </li>
+                    <li>
+                        <span style="color: var(--success);">✓</span>
+                        <span>Standard visibility</span>
+                    </li>
+                </ul>
+
+                <button class="btn btn-outline" style="width: 100%;">Current Plan</button>
+            </div>
+
+            <!-- Premium Package (Featured) -->
+            <div class="package-card featured">
+                <div class="package-badge premium">⭐ Premium</div>
+                <div
+                    style="position: absolute; top: 1rem; right: 1rem; background: var(--gradient-secondary); color: white; padding: 0.375rem 0.875rem; border-radius: var(--radius-full); font-size: 0.75rem; font-weight: 700;">
+                    POPULAR</div>
+                <h2 class="package-name">Premium</h2>
+                <div class="package-price">₹2,999<span>/month</span></div>
+                <div class="package-commission">12% Commission (Save 3%!)</div>
+                <p style="color: var(--text-secondary); margin-bottom: 2rem;">
+                    Boost your visibility and earnings
+                </p>
+
+                <ul class="package-features">
+                    <li>
+                        <span style="color: var(--success);">✓</span>
+                        <span><strong>Premium badge</strong></span>
+                    </li>
+                    <li>
+                        <span style="color: var(--success);">✓</span>
+                        <span><strong>Featured placement</strong></span>
+                    </li>
+                    <li>
+                        <span style="color: var(--success);">✓</span>
+                        <span>Luxury amenities listing</span>
+                    </li>
+                    <li>
+                        <span style="color: var(--success);">✓</span>
+                        <span>Priority support</span>
+                    </li>
+                    <li>
+                        <span style="color: var(--success);">✓</span>
+                        <span>Advanced analytics</span>
+                    </li>
+                    <li>
+                        <span style="color: var(--success);">✓</span>
+                        <span>Marketing materials</span>
+                    </li>
+                    <li>
+                        <span style="color: var(--success);">✓</span>
+                        <span>Dynamic pricing tools</span>
+                    </li>
+                </ul>
+
+                <button class="btn btn-primary" style="width: 100%;">Upgrade to Premium</button>
+            </div>
+
+            <!-- VIP Package -->
+            <div class="package-card">
+                <div class="package-badge vip">👑 VIP</div>
+                <h2 class="package-name">VIP</h2>
+                <div class="package-price">₹5,999<span>/month</span></div>
+                <div class="package-commission">10% Commission (Save 5%!)</div>
+                <p style="color: var(--text-secondary); margin-bottom: 2rem;">
+                    Maximum revenue potential
+                </p>
+
+                <ul class="package-features">
+                    <li>
+                        <span style="color: var(--success);">✓</span>
+                        <span><strong>VIP badge</strong></span>
+                    </li>
+                    <li>
+                        <span style="color: var(--success);">✓</span>
+                        <span><strong>Top placement</strong></span>
+                    </li>
+                    <li>
+                        <span style="color: var(--success);">✓</span>
+                        <span>Full luxury services</span>
+                    </li>
+                    <li>
+                        <span style="color: var(--success);">✓</span>
+                        <span>Dedicated account manager</span>
+                    </li>
+                    <li>
+                        <span style="color: var(--success);">✓</span>
+                        <span>Professional photography</span>
+                    </li>
+                    <li>
+                        <span style="color: var(--success);">✓</span>
+                        <span>Social media promotion</span>
+                    </li>
+                    <li>
+                        <span style="color: var(--success);">✓</span>
+                        <span>Premium analytics suite</span>
+                    </li>
+                    <li>
+                        <span style="color: var(--success);">✓</span>
+                        <span>Revenue optimization AI</span>
+                    </li>
+                </ul>
+
+                <button class="btn btn-primary" style="width: 100%; background: var(--gradient-secondary);">Upgrade to
+                    VIP</button>
+            </div>
+        </div>
+
+        <!-- Revenue Calculator -->
+        <div class="revenue-calculator">
+            <h2 style="text-align: center; margin-bottom: 2rem;">Revenue Calculator</h2>
+            <p style="text-align: center; color: var(--text-secondary); margin-bottom: 3rem;">
+                See how much you can earn with different packages
+            </p>
+
+            <div style="max-width: 600px; margin: 0 auto;">
+                <div class="calculator-input">
+                    <label class="form-label">Average bookings per day</label>
+                    <input type="number" id="bookings-per-day" class="form-input" value="30" min="1">
+                </div>
+
+                <div class="calculator-input">
+                    <label class="form-label">Average booking value (₹)</label>
+                    <input type="number" id="avg-booking-value" class="form-input" value="200" min="1">
+                </div>
+
+                <div class="calculator-input">
+                    <label class="form-label">Select Package</label>
+                    <select id="package-select" class="form-select">
+                        <option value="15">Basic (15% commission)</option>
+                        <option value="12" selected>Premium (12% commission)</option>
+                        <option value="10">VIP (10% commission)</option>
+                    </select>
+                </div>
+
+                <button class="btn btn-primary" style="width: 100%;" onclick="calculateRevenue()">
+                    Calculate Monthly Revenue
+                </button>
+
+                <div class="calculator-result" style="margin-top: 2rem;" id="result">
+                    <div style="font-size: 1.125rem; opacity: 0.95;">Estimated Monthly Revenue</div>
+                    <div class="result-value" id="monthly-revenue">₹0</div>
+                    <div style="opacity: 0.9;">
+                        <div>Daily: <span id="daily-revenue" style="font-weight: 700;">₹0</span></div>
+                        <div style="margin-top: 0.5rem;">Commission: <span id="commission"
+                                style="font-weight: 700;">₹0</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Benefits Section -->
+    <div class="benefits-section">
+        <div class="container">
+            <h2 style="text-align: center; margin-bottom: 3rem;">Why Upgrade?</h2>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem;">
+                <div style="text-align: center;">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">📈</div>
+                    <h3 style="margin-bottom: 0.5rem;">Higher Visibility</h3>
+                    <p style="color: var(--text-secondary);">Featured placement = 3x more bookings</p>
+                </div>
+
+                <div style="text-align: center;">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">💰</div>
+                    <h3 style="margin-bottom: 0.5rem;">Lower Commission</h3>
+                    <p style="color: var(--text-secondary);">Keep more of what you earn</p>
+                </div>
+
+                <div style="text-align: center;">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">⭐</div>
+                    <h3 style="margin-bottom: 0.5rem;">Premium Badge</h3>
+                    <p style="color: var(--text-secondary);">Stand out from competition</p>
+                </div>
+
+                <div style="text-align: center;">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">🎯</div>
+                    <h3 style="margin-bottom: 0.5rem;">Marketing Support</h3>
+                    <p style="color: var(--text-secondary);">Professional promotion included</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function calculateRevenue() {
+            const bookingsPerDay = parseInt(document.getElementById('bookings-per-day').value);
+            const avgBookingValue = parseInt(document.getElementById('avg-booking-value').value);
+            const commissionRate = parseInt(document.getElementById('package-select').value);
+
+            const dailyRevenue = bookingsPerDay * avgBookingValue;
+            const monthlyRevenue = dailyRevenue * 30;
+            const commission = (monthlyRevenue * commissionRate) / 100;
+            const netRevenue = monthlyRevenue - commission;
+
+            document.getElementById('daily-revenue').textContent = `₹${dailyRevenue.toLocaleString()}`;
+            document.getElementById('monthly-revenue').textContent = `₹${netRevenue.toLocaleString()}`;
+            document.getElementById('commission').textContent = `₹${commission.toLocaleString()} (${commissionRate}%)`;
+        }
+
+        // Calculate on page load
+        calculateRevenue();
+
+        // Recalculate on input change
+        document.getElementById('bookings-per-day').addEventListener('input', calculateRevenue);
+        document.getElementById('avg-booking-value').addEventListener('input', calculateRevenue);
+        document.getElementById('package-select').addEventListener('change', calculateRevenue);
+    </script>
+</body>
+
+</html>
