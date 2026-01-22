@@ -267,10 +267,221 @@
             opacity: 1;
             transform: translateY(0);
         }
+
+        /* Navigation Bar */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            padding: 1rem 0;
+        }
+
+        .navbar-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar-logo {
+            font-size: 1.5rem;
+            font-weight: 900;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-decoration: none;
+        }
+
+        .navbar-menu {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .navbar-link {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition-base);
+            position: relative;
+        }
+
+        .navbar-link:hover {
+            color: var(--primary);
+        }
+
+        .navbar-dropdown {
+            position: relative;
+        }
+
+        .dropdown-toggle {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: white;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-xl);
+            padding: 1rem 0;
+            min-width: 250px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: var(--transition-smooth);
+        }
+
+        .navbar-dropdown:hover .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-item {
+            display: block;
+            padding: 0.75rem 1.5rem;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: var(--transition-base);
+        }
+
+        .dropdown-item:hover {
+            background: var(--bg-secondary);
+            color: var(--primary);
+        }
+
+        .dropdown-item-icon {
+            margin-right: 0.5rem;
+        }
+
+        /* Premium Features Section */
+        .premium-features {
+            padding: 6rem 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .premium-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .premium-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: var(--radius-xl);
+            padding: 2rem;
+            text-align: center;
+            transition: var(--transition-smooth);
+            cursor: pointer;
+        }
+
+        .premium-card:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .premium-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .premium-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: white;
+        }
+
+        .premium-description {
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 1.5rem;
+        }
+
+        .premium-badge {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-full);
+            font-size: 0.875rem;
+            font-weight: 700;
+            display: inline-block;
+        }
+
+        /* Hero spacing adjustment */
+        .hero {
+            margin-top: 80px;
+        }
+
+        @media (max-width: 768px) {
+            .navbar-menu {
+                display: none;
+            }
+        }
     </style>
 </head>
 
 <body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="index.html" class="navbar-logo">vcloak</a>
+
+            <div class="navbar-menu">
+                <div class="navbar-dropdown">
+                    <div class="navbar-link dropdown-toggle">
+                        Premium Services ▼
+                    </div>
+                    <div class="dropdown-menu">
+                        <a href="smart-layover.html" class="dropdown-item">
+                            <span class="dropdown-item-icon">🧳</span>
+                            Smart Layover Planner
+                        </a>
+                        <a href="teleport.html" class="dropdown-item">
+                            <span class="dropdown-item-icon">🚀</span>
+                            Teleport Service
+                        </a>
+                        <a href="services.html" class="dropdown-item">
+                            <span class="dropdown-item-icon">✨</span>
+                            Add-On Services
+                        </a>
+                        <a href="membership.html" class="dropdown-item">
+                            <span class="dropdown-item-icon">👑</span>
+                            Elite Membership
+                        </a>
+                        <a href="stories.html" class="dropdown-item">
+                            <span class="dropdown-item-icon">🎥</span>
+                            Success Stories
+                        </a>
+                    </div>
+                </div>
+
+                <a href="traveler/search.html" class="navbar-link">Find Storage</a>
+                <a href="provider/packages.html" class="navbar-link">For Providers</a>
+                <a href="login.html" class="btn btn-outline">Sign In</a>
+                <a href="register.html" class="btn btn-primary">Get Started</a>
+            </div>
+        </div>
+    </nav>
+
     <!-- Hero Section -->
     <section class="hero">
         <div class="hero-content">
@@ -304,6 +515,76 @@
                         <div class="stat-label">Support</div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Premium Features Showcase -->
+    <section class="premium-features">
+        <div class="container">
+            <div class="section-title">
+                <h2 style="color: white;">🌟 Premium Services</h2>
+                <p
+                    style="font-size: 1.125rem; color: rgba(255, 255, 255, 0.95); max-width: 700px; margin: 1rem auto 0;">
+                    Experience luxury travel with our exclusive services designed for comfort and convenience
+                </p>
+            </div>
+
+            <div class="premium-grid">
+                <a href="smart-layover.html" class="premium-card" style="text-decoration: none; color: white;">
+                    <div class="premium-icon">🧳</div>
+                    <h3 class="premium-title">Smart Layover Planner</h3>
+                    <p class="premium-description">
+                        AI-powered itinerary generator. Drop your bags and discover the city with personalized
+                        recommendations.
+                    </p>
+                    <div class="premium-badge">NEW ✨</div>
+                </a>
+
+                <a href="teleport.html" class="premium-card" style="text-decoration: none; color: white;">
+                    <div class="premium-icon">🚀</div>
+                    <h3 class="premium-title">Teleport Service</h3>
+                    <p class="premium-description">
+                        Point-to-point delivery. Drop at airport, pick up at hotel. Never see your luggage again!
+                    </p>
+                    <div class="premium-badge">POPULAR 🔥</div>
+                </a>
+
+                <a href="services.html" class="premium-card" style="text-decoration: none; color: white;">
+                    <div class="premium-icon">✨</div>
+                    <h3 class="premium-title">Add-On Services</h3>
+                    <p class="premium-description">
+                        Luggage cleaning, wrapping, delivery, and more. Enhance your storage experience.
+                    </p>
+                    <div class="premium-badge">6 SERVICES</div>
+                </a>
+
+                <a href="membership.html" class="premium-card" style="text-decoration: none; color: white;">
+                    <div class="premium-icon">👑</div>
+                    <h3 class="premium-title">Elite Membership</h3>
+                    <p class="premium-description">
+                        Up to 20% off, VIP lounge access, free upgrades. Join 4-tier loyalty program.
+                    </p>
+                    <div class="premium-badge">SAVE 20%</div>
+                </a>
+
+                <a href="stories.html" class="premium-card" style="text-decoration: none; color: white;">
+                    <div class="premium-icon">🎥</div>
+                    <h3 class="premium-title">Success Stories</h3>
+                    <p class="premium-description">
+                        Real travelers, real experiences. See how vcloak made their journey hands-free.
+                    </p>
+                    <div class="premium-badge">VERIFIED ✓</div>
+                </a>
+
+                <a href="provider/packages.html" class="premium-card" style="text-decoration: none; color: white;">
+                    <div class="premium-icon">💼</div>
+                    <h3 class="premium-title">Provider Packages</h3>
+                    <p class="premium-description">
+                        For providers: Earn 8x more with premium packages. Lower commission, higher revenue.
+                    </p>
+                    <div class="premium-badge">FOR PROVIDERS</div>
+                </a>
             </div>
         </div>
     </section>
