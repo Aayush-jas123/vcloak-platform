@@ -148,6 +148,21 @@ function handleApiError(error) {
     }
 }
 
+// Global Logout Handler (for onclick="handleLogout()")
+async function handleLogout() {
+    try {
+        await api.logout();
+    } catch (error) {
+        console.error('Logout error:', error);
+        // Force logout even if API call fails
+        removeAuthToken();
+        window.location.href = '/login.html';
+    }
+}
+
+// Make handleLogout globally accessible
+window.handleLogout = handleLogout;
+
 // Initialize Dashboard
 function initDashboard() {
     // Check authentication
@@ -156,12 +171,12 @@ function initDashboard() {
     // Populate user info
     populateUserInfo();
 
-    // Add logout handler
+    // Add logout handler for buttons with id="logout-btn"
     const logoutBtn = document.getElementById('logout-btn');
     if (logoutBtn) {
         logoutBtn.addEventListener('click', async (e) => {
             e.preventDefault();
-            await api.logout();
+            await handleLogout();
         });
     }
 }
